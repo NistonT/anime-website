@@ -1,1 +1,6 @@
 /* Шрифты */
+
+@font-face {
+  font-family: "Netflix-regular";
+  src: url("./../assets/font/NetflixSans-Regular.otf");
+}
