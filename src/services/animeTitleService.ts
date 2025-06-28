@@ -17,7 +17,7 @@ class AnimeTitleService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitle>(`/v3/${this.BASE_URL}?${queryParams}`);
+    const response = await axiosClassic.get<ITitle>(`${this.BASE_URL}?${queryParams}`);
     return response.data;
   }
 
@@ -29,7 +29,7 @@ class AnimeTitleService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitle[]>(`/v3/${this.BASE_URL}/list?${queryParams}`);
+    const response = await axiosClassic.get<ITitle[]>(`${this.BASE_URL}/list?${queryParams}`);
     return response.data;
   }
 
@@ -41,7 +41,7 @@ class AnimeTitleService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitleUpdates>(`/v3/${this.BASE_URL}/updates?${queryParams}`);
+    const response = await axiosClassic.get<ITitleUpdates>(`${this.BASE_URL}/updates?${queryParams}`);
     return response.data;
   }
 
@@ -53,7 +53,7 @@ class AnimeTitleService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitleChange>(`/v3/${this.BASE_URL}/changes?${queryParams}`);
+    const response = await axiosClassic.get<ITitleChange>(`${this.BASE_URL}/changes?${queryParams}`);
     return response.data;
   }
 
@@ -65,19 +65,19 @@ class AnimeTitleService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitleSchedule[]>(`/v3/${this.BASE_URL}/schedule?${queryParams}`);
+    const response = await axiosClassic.get<ITitleSchedule[]>(`${this.BASE_URL}/schedule?${queryParams}`);
     return response.data;
   }
 
   // Возвращает случайный тайтл из базы
   // GET /v3/title/random
-  public async getTitleRandom(params: ITitleRandomParams): Promise<ITitle[]> {
+  public async getTitleRandom(params: ITitleRandomParams): Promise<ITitle> {
     const queryParams = Object.entries(params)
       .filter(([, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const response = await axiosClassic.get<ITitle[]>(`/v3/${this.BASE_URL}/random?${queryParams}`);
+    const response = await axiosClassic.get<ITitle>(`${this.BASE_URL}/random?${queryParams}`);
     return response.data;
   }
 }
