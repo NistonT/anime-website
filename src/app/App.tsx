@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
+import animePoster from "/image/animePoster.jpg";
 
 export const App = () => {
   const { data } = useQuery({
@@ -16,22 +17,29 @@ export const App = () => {
   });
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
-    console.log(import.meta.env.VITE_API_URL);
+    console.log(`${import.meta.env.VITE_URL}storage/releases/posters/9000/NBPPaSwgJrcoO4eg__f003bb6841ce26560a643491c197878f.jpg`);
   }, []);
 
   return (
     <>
       <div>
-        <Swiper spaceBetween={0} slidesPerView={3} onSlideChange={() => console.log("slide change")} onSwiper={(swiper) => console.log(swiper)}>
-          {data?.list.map((elem) => (
-            <SwiperSlide key={elem.id}>
-              <img src={`${import.meta.env.VITE_URL}${elem.posters.medium.url}`} alt="small" />
+        <Swiper spaceBetween={0} slidesPerView={1}>
+          {data?.list && data.list.length > 0 ? (
+            data.list.map((elem) => (
+              <SwiperSlide key={elem.id}>
+                <div>
+                  <img src={`${import.meta.env.VITE_URL}${elem.posters.medium.url}`} alt="poster" />
+                  <div>
+                    <p></p>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))
+          ) : (
+            <SwiperSlide>
+              <img src={animePoster} alt="default poster" />
             </SwiperSlide>
-          ))}
+          )}
         </Swiper>
       </div>
     </>

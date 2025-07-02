@@ -1,29 +1,17 @@
-import { Link } from "@tanstack/react-router";
+import { DASHBOARD_PAGES } from "@/config/pages-url.config";
+import { LinkRouter } from "../ui/Link";
 import logo from "/logo/logo.png";
 
 export const Header = () => {
   return (
-    <div className="flex absolute z-50">
+    <div className="flex absolute z-50 bg-gradient-to-r from-black to-transparent gap-10">
       <div>
         <img className="w-52" src={logo} alt="logo" />
       </div>
-      <div className="flex items-center justify-between">
-        <Link className="font-netflix-regular" to="/">
-          Home
-        </Link>
-        <Link to="/about">About</Link>
+      <div className="flex items-center justify-between gap-5">
+        <LinkRouter href={DASHBOARD_PAGES.HOME}>Home</LinkRouter>
+        <LinkRouter href={DASHBOARD_PAGES.ABOUT}>About</LinkRouter>
       </div>
     </div>
   );
 };
-
-{
-  /* <div className='p-2 flex gap-2'>
-				<Link to='/' className='[&.active]:font-bold'>
-					Home
-				</Link>{" "}
-				<Link to='/about' className='[&.active]:font-bold'>
-					About
-				</Link>
-			</div> */
-}
