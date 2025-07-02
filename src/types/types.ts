@@ -78,7 +78,7 @@ export interface IBlocked {
 export interface IPlayer {
   alternative_player: string | null;
   host: IHost | null;
-  list: IListPlayer | null;
+  list: IListPlayer[];
   rutube: IRutube | null;
   episodes: IEpisodes | null;
 }
