@@ -6,5 +6,5 @@ type Props = {
 };
 
 export const Container: FC<Props> = ({ children }) => {
-  return <div className="container mx-auto">{children}</div>;
+  return <div className="container mx-auto px-10 py-2 bg-bg">{children}</div>;
 };
