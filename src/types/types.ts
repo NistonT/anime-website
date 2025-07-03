@@ -94,7 +94,7 @@ export interface IListPlayer {
   created_timestamp: number | null;
   preview: string | null;
   skips: number[] | null;
-  hls: IHls | null;
+  hls: IHls;
 }
 
 export interface IRutube {
@@ -104,9 +104,9 @@ export interface IRutube {
 }
 
 export interface IHls {
-  fhd: string | null;
-  hd: string | null;
-  sd: string | null;
+  fhd: string;
+  hd: string;
+  sd: string;
 }
 
 export interface ITorrents {
