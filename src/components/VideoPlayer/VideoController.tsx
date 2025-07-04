@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 
+// Типизация для внутреннего API Vidstack
 type MediaPlayerInstance = {
   play?(): void;
   pause?(): void;
@@ -16,90 +17,45 @@ type VideoControllerProps = {
 };
 
 export const VideoController = ({ playerRef }: VideoControllerProps) => {
-  const [volume, setVolume] = useState<number>(1);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const animationFrameRef = useRef<number | null>(null);
-
-  // Обновляем состояние плеера
-  useEffect(() => {
-    if (!playerRef.current) return;
-
-    const player = playerRef.current;
-
-    // Установка начальных значений
-    if (player.volume !== undefined) {
-      setVolume(player.volume);
-    }
-    if (player.paused !== undefined) {
-      setIsPlaying(!player.paused);
-    }
-    if (player.duration !== undefined) {
-      setDuration(player.duration);
-    }
-
-    // Функция для обновления времени
-    const updateTime = () => {
-      if (player.currentTime !== undefined) {
-        setCurrentTime(player.currentTime);
-      }
-      animationFrameRef.current = requestAnimationFrame(updateTime);
-    };
-
-    // Запускаем обновление времени
-    animationFrameRef.current = requestAnimationFrame(updateTime);
-
-    // Очистка при размонтировании
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [playerRef]);
+  const [volume, setVolume] = useState<number>(50);
+  const player = playerRef.current;
 
   const togglePlay = () => {
-    const player = playerRef.current;
     if (!player) return;
-
     if (player.paused) {
-      player.play?.();
-      setIsPlaying(true);
+      if (typeof player.play === "function") {
+        player.play();
+      }
     } else {
-      player.pause?.();
-      setIsPlaying(false);
+      if (typeof player.pause === "function") {
+        player.pause();
+      }
     }
   };
 
   const seekBackward = () => {
-    const player = playerRef.current;
-    if (!player) return;
-    const newTime = Math.max(currentTime - 10, 0);
-    player.seek?.(newTime);
-    setCurrentTime(newTime);
+    if (!player || player.currentTime == null) return;
+    // console.log(typeof player.seek(20));
+    // const newTime = Math.max(0, player.currentTime - 10);
+    // if (typeof player.seek === "function") {
+    //   player.seek(newTime);
+    // }
   };
 
   const seekForward = () => {
-    const player = playerRef.current;
-    if (!player || duration === 0) return;
-    const newTime = Math.min(currentTime + 10, duration);
+    if (!player || player.currentTime == null || player.duration == null) return;
+    const newTime = Math.min(player.duration, player.currentTime + 10);
     player.seek?.(newTime);
-    setCurrentTime(newTime);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
+    const newVolume = parseInt(e.target.value, 10);
     setVolume(newVolume);
-    playerRef.current?.setVolume?.(newVolume);
+    if (player && player.setVolume) {
+      player.setVolume(newVolume / 100); // Volume в Vidstack от 0 до 1
+    }
   };
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    playerRef.current?.seek?.(newTime);
-  };
-
-  // Форматирование времени в MM:SS
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -108,24 +64,42 @@ export const VideoController = ({ playerRef }: VideoControllerProps) => {
 
   return (
     <div style={{ marginTop: "1rem", textAlign: "center" }}>
-      <button onClick={togglePlay}>{isPlaying ? "⏸ Пауза" : "▶️ Воспроизвести"}</button>
+      <div style={{ marginBottom: "1rem" }}>
+        <button
+          onClick={togglePlay}
+          style={{
+            padding: "0.5rem 1rem",
+            fontSize: "1rem",
+            borderRadius: "4px",
+            border: "none",
+            backgroundColor: player?.paused ? "#2ed573" : "#ff4757",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          {player?.paused ? "▶️ Воспроизвести" : "⏸ Пауза"}
+        </button>
+      </div>
 
-      <div>
-        <button onClick={seekBackward}>⏪ -10 сек</button>
-        <button onClick={seekForward}>⏩ +10 сек</button>
+      <div style={{ marginBottom: "1rem" }}>
+        <button onClick={seekBackward} style={{ margin: "0 0.5rem" }}>
+          ⏪ -10 сек
+        </button>
+        <button onClick={seekForward} style={{ margin: "0 0.5rem" }}>
+          ⏩ +10 сек
+        </button>
+      </div>
+
+      <div style={{ marginBottom: "1rem" }}>
+        <label>
+          🔊 Громкость:
+          <input type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} style={{ marginLeft: "10px", width: "80%" }} />
+        </label>
+        <p>Текущая громкость: {volume}%</p>
       </div>
 
       <div>
-        <input type="range" min="0" max={duration || 100} step="0.1" value={currentTime} onChange={handleTimeChange} style={{ width: "100%" }} />
-        <div>
-          {formatTime(currentTime)} / {formatTime(duration)}
-        </div>
-      </div>
-
-      <div>
-        Громкость:
-        <input type="range" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange} />
-        {Math.round(volume * 100)}%
+        Текущее время: {formatTime(player?.currentTime || 0)} / {formatTime(player?.duration || 0)}
       </div>
     </div>
   );
