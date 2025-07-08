@@ -1,5 +1,4 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 type Props = {
   href: string;
@@ -9,10 +8,6 @@ type Props = {
 
 export const LinkRouter = ({ href, children, className }: Props) => {
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    console.log(pathname, href);
-  }, [pathname]);
 
   return (
     <>
