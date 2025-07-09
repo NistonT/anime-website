@@ -103,6 +103,7 @@
   /* Color website */
 
   --color-black: var(--color-black);
+  --color-main: var(--color-main);
   --color-bg: var(--color-background-color);
   /* Font website */
   --font-netflix-regular: var(--font-netflix-regular);
