@@ -18,6 +18,8 @@
   --color-main: #e50914;
   --color-white: #eee;
 
+  --main: #e50914;
+
   /* ------------- */
   /* Font website */
 
@@ -63,6 +65,10 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+@theme {
+  --inset-shadow-md: inset 0 0px 150px rgba(0, 0, 0, 0.9);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -103,7 +109,7 @@
   /* Color website */
 
   --color-black: var(--color-black);
-  --color-main: var(--color-main);
+  --color-main: var(--main);
   --color-bg: var(--color-background-color);
   /* Font website */
   --font-netflix-regular: var(--font-netflix-regular);
@@ -141,6 +147,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --color-black: var(--color-black);
+  --color-main: var(--main);
+  --color-bg: var(--color-background-color);
 }
 
 @layer base {
