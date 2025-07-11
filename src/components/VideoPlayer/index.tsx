@@ -14,6 +14,7 @@ type Props = {
 export const VideoPlayer = ({ video }: Props) => {
   const [videoHost] = useState(video.player.host);
   const player = useRef<MediaPlayerInstance>(null);
+
   const [isPlaying, setPlaying] = useState<boolean>(false);
   const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
   const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
@@ -22,6 +23,20 @@ export const VideoPlayer = ({ video }: Props) => {
   const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false);
 
   const { fullscreen, qualities, canSetQuality, currentTime, duration, volume, muted } = useMediaStore(player);
+
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseMove = () => {
+    enterPlayerPanel();
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      leavePlayerPanel();
+    }, 1000);
+  };
 
   const enterVolumeInput = () => {
     setIsVolumeInput(true);
@@ -118,6 +133,14 @@ export const VideoPlayer = ({ video }: Props) => {
     }
   }, [video, listEpisode]);
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   if (!video.player) {
     return <div>Видео недоступно</div>;
   }
@@ -143,13 +166,9 @@ export const VideoPlayer = ({ video }: Props) => {
           w-full h-full rounded-lg overflow-hidden bg-black
           ${fullscreen ? `object-cover h-screen w-screen` : "object-contain"}
         `}
-          onMouseEnter={enterPlayerPanel}
-          onMouseLeave={leavePlayerPanel}
-          onMouseMove={() => {
-            setTimeout(() => {
-              leavePlayerPanel();
-            }, 1000);
-          }}
+          // onMouseEnter={enterPlayerPanel}
+          // onMouseLeave={leavePlayerPanel}
+          onMouseMove={handleMouseMove}
         >
           <MediaProvider />
           {isPlayerPanel && (
