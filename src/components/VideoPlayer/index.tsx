@@ -1,163 +1,50 @@
+import { useMediaPlayerInstance } from "@/hooks/useMediaPlayerInstance";
 import type { ITitle } from "@/types/title.type";
-import type { IHls, IListPlayer } from "@/types/types";
-import { MediaPlayer, MediaPlayerInstance, MediaProvider, useMediaStore } from "@vidstack/react";
+import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
-import { Expand, Pause, Play, Settings, Shrink, SlidersHorizontal, Volume2, VolumeOff } from "lucide-react";
+import { Pause, Play, Volume2, VolumeOff } from "lucide-react";
 import { m } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "../ui/Button";
+import { ButtonFullscreen } from "./ButtonFullscreen";
+import { ButtonSettingPlayer } from "./ButtonSettingPlayer";
+import { SettingPlayer } from "./SettingPlayer";
+import { VideoTime } from "./VideoTime";
 
 type Props = {
   video: ITitle;
 };
 
 export const VideoPlayer = ({ video }: Props) => {
-  const [videoHost] = useState(video.player.host);
-  const player = useRef<MediaPlayerInstance>(null);
-
-  const [isPlaying, setPlaying] = useState<boolean>(false);
-  const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
-  const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
-  const [isOpenSettingPlayer, setIsOpenSettingPlayer] = useState<boolean>(false);
-  const [isOpenSettingQualitiesPlayer, setIsOpenSettingQualitiesPlayer] = useState<boolean>(false);
-  const [isPlayerPanel, setIsPlayerPanel] = useState<boolean>(false);
-  const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false);
-
-  const { fullscreen, qualities, canSetQuality, currentTime, duration, volume, muted, quality } = useMediaStore(player);
-
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleMouseMove = () => {
-    if (fullscreen && isPlaying) {
-      enterPlayerPanel();
-
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-
-      timerRef.current = setTimeout(() => {
-        leavePlayerPanel();
-      }, 3000);
-    } else {
-      enterPlayerPanel();
-    }
-  };
-
-  const openSettingQualitiesPlayer = () => {
-    setIsOpenSettingQualitiesPlayer(true);
-  };
-
-  const closeSettingQualitiesPlayer = () => {
-    setIsOpenSettingQualitiesPlayer(false);
-  };
-
-  const enterVolumeInput = () => {
-    setIsVolumeInput(true);
-  };
-
-  const leaveVolumeInput = () => {
-    setIsVolumeInput(false);
-  };
-
-  const enterPlayerPanel = () => {
-    setIsPlayerPanel(true);
-  };
-
-  const leavePlayerPanel = () => {
-    setIsPlayerPanel(false);
-  };
-
-  const toggleOpenSettingPlayer = () => {
-    setIsOpenSettingPlayer(!isOpenSettingPlayer);
-
-    if (isOpenSettingQualitiesPlayer) {
-      closeSettingQualitiesPlayer();
-    }
-  };
-
-  const handlerCurrentEpisode = (episode: IHls) => {
-    setCurrentEpisode(episode);
-  };
-
-  const toggleFullscreen = () => {
-    if (fullscreen) {
-      player.current?.exitFullscreen();
-    } else {
-      player.current?.enterFullscreen();
-    }
-  };
-
-  const toggleAutoPlay = () => {
-    if (isPlaying) {
-      player.current?.pause();
-      setPlaying(false);
-    } else {
-      player.current?.play();
-      setPlaying(true);
-    }
-  };
-
-  const playlist = useMemo(
-    () =>
-      [
-        "#EXTM3U",
-        "#EXT-X-VERSION:4",
-        "#EXT-X-PLAYLIST-TYPE:VOD",
-        "",
-        "#EXT-X-STREAM-INF:RESOLUTION=720x480",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.sd}`
-          : video.player.list?.[1]?.hls?.sd
-            ? `https://${videoHost}${video.player.list[1].hls.sd}`
-            : "",
-        "#EXT-X-STREAM-INF:RESOLUTION=1280x720",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.hd}`
-          : video.player.list?.[1]?.hls?.hd
-            ? `https://${videoHost}${video.player.list[1].hls.hd}`
-            : "",
-        "",
-        "#EXT-X-STREAM-INF:RESOLUTION=1920x1080",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.fhd}`
-          : video.player.list?.[1]?.hls?.fhd
-            ? `https://${videoHost}${video.player.list[1].hls.fhd}`
-            : "",
-      ].join("\n"),
-    [videoHost, video.player.list, currentEpisode],
-  );
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const secs = Math.floor(seconds % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${mins}:${secs}`;
-  };
-
-  const videoSrc = useMemo(() => {
-    const blob = new Blob([playlist], {
-      type: "application/x-mpegurl",
-    });
-    return URL.createObjectURL(blob);
-  }, [playlist]);
-
-  useEffect(() => {
-    if (video.player.list) {
-      setListEpisode(video.player.list);
-    }
-  }, [video, listEpisode]);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [fullscreen, isPlaying]);
+  const {
+    fullscreen,
+    qualities,
+    canSetQuality,
+    currentTime,
+    duration,
+    volume,
+    muted,
+    quality,
+    videoSrc,
+    formatTime,
+    player,
+    toggleAutoPlay,
+    toggleFullscreen,
+    handlerCurrentEpisode,
+    toggleOpenSettingPlayer,
+    enterVolumeInput,
+    leaveVolumeInput,
+    enterPlayerPanel,
+    leavePlayerPanel,
+    openSettingQualitiesPlayer,
+    handleMouseMove,
+    isPlayerPanel,
+    isVolumeInput,
+    isPlaying,
+    listEpisode,
+    isOpenSettingPlayer,
+    isOpenSettingQualitiesPlayer,
+    closeSettingQualitiesPlayer,
+  } = useMediaPlayerInstance(video);
 
   if (!video.player) {
     return <div>Видео недоступно</div>;
@@ -282,62 +169,24 @@ export const VideoPlayer = ({ video }: Props) => {
                           />
                         )}
                       </div>
-                      <div className="text-white text-xs">
-                        <span>{formatTime(currentTime)} / </span>
-                        <span>{formatTime(duration)}</span>
-                      </div>
+                      <VideoTime formatTime={formatTime} currentTime={currentTime} duration={duration} />
                     </div>
                     <div className="flex items-center gap-5">
-                      <div className="relative">
-                        {isOpenSettingPlayer && (
-                          // <div className="absolute -top-24 left-0 z-10">
-                          //   {qualities.map((q, index) => (
-                          //     <button
-                          //       key={index}
-                          //       onClick={() => {
-                          //         q.selected = true;
-                          //         toggleOpenSettingPlayer();
-                          //       }}
-                          //       disabled={!canSetQuality}
-                          //       className={`px-3 py-1 rounded text-sm ${
-                          //         q.selected ? "bg-green-500 text-white" : "bg-gray-200"
-                          //       } ${!canSetQuality && "opacity-50 cursor-not-allowed"}`}
-                          //     >
-                          //       {q.height}p
-                          //     </button>
-                          //   ))}
-                          // </div>
-                          <div className="absolute -top-20 -right-22 z-10 w-72">
-                            <div className="bg-bg rounded-lg py-2">
-                              {!isOpenSettingQualitiesPlayer && (
-                                <div>
-                                  <Button
-                                    variant={"setting"}
-                                    size={"lg"}
-                                    className={`${fullscreen ? "text-sm" : null}`}
-                                    onClick={openSettingQualitiesPlayer}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <SlidersHorizontal />
-                                      Качество
-                                    </div>
-                                    {quality?.height}p
-                                  </Button>
-                                </div>
-                              )}
-                              {isOpenSettingQualitiesPlayer && <div>качество</div>}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <SettingPlayer
+                        fullscreen={fullscreen}
+                        openSettingQualitiesPlayer={openSettingQualitiesPlayer}
+                        quality={quality}
+                        closeSettingQualitiesPlayer={closeSettingQualitiesPlayer}
+                        qualities={qualities}
+                        canSetQuality={canSetQuality}
+                        toggleOpenSettingPlayer={toggleOpenSettingPlayer}
+                        isOpenSettingPlayer={isOpenSettingPlayer}
+                        isOpenSettingQualitiesPlayer={isOpenSettingQualitiesPlayer}
+                      />
 
-                      <button className="text-white" type="button" onClick={toggleOpenSettingPlayer}>
-                        <Settings />
-                      </button>
+                      <ButtonSettingPlayer toggleOpenSettingPlayer={toggleOpenSettingPlayer} />
 
-                      <button onClick={toggleFullscreen} type="button" className="text-white">
-                        {fullscreen ? <Shrink /> : <Expand />}
-                      </button>
+                      <ButtonFullscreen toggleFullscreen={toggleFullscreen} fullscreen={fullscreen} />
                     </div>
                   </div>
                 </div>
