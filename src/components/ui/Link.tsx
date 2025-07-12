@@ -12,7 +12,7 @@ export const LinkRouter = ({ href, children, className }: Props) => {
   return (
     <>
       <Link
-        className={`font-netflix-regular ${pathname === href ? "text-white font-medium" : "hover:text-white hover:font-medium text-gray-200 font-normal"} ${className}`}
+        className={`font-netflix ${pathname === href ? "text-white font-medium" : "hover:text-white hover:font-medium text-gray-200 font-normal"} ${className}`}
         to={href}
       >
         {children}

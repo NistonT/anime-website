@@ -4,21 +4,23 @@ import { useMediaStore, type MediaPlayerInstance } from "@vidstack/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const useMediaPlayerInstance = (video: ITitle) => {
-  const [videoHost] = useState(video.player.host); // Состояние хоста
-  const player = useRef<MediaPlayerInstance>(null); // Плеер
-  const [isPlaying, setPlaying] = useState<boolean>(false); // Играет ли видос
-  const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null); // Лист эпизодов
-  const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null); // В данный момент эпизод
-  const [isOpenSettingPlayer, setIsOpenSettingPlayer] = useState<boolean>(false); // Открыты ли настройки плеера
-  const [isOpenSettingQualitiesPlayer, setIsOpenSettingQualitiesPlayer] = useState<boolean>(false); // Открыты ли настройки качества
-  const [isPlayerPanel, setIsPlayerPanel] = useState<boolean>(false); // Открыта ли панель в плеере
-  const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false); // Показан ли диапазон звука
+  const [videoHost] = useState(video.player.host);
+  const player = useRef<MediaPlayerInstance>(null);
+  const [isPlaying, setPlaying] = useState<boolean>(false);
+  const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
+  const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
+  const [isOpenSettingPlayer, setIsOpenSettingPlayer] = useState<boolean>(false);
+  const [isOpenSettingQualitiesPlayer, setIsOpenSettingQualitiesPlayer] = useState<boolean>(false);
+  const [isOpenListEpisode, setIsOpenListEpisode] = useState<boolean>(false);
+  const [selectedEpisode, setSelectedEpisode] = useState<string>("");
+  const [isPlayerPanel, setIsPlayerPanel] = useState<boolean>(false);
+  const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false);
+  const [propertiesEpisode, setPropertiesEpisode] = useState<IListPlayer | null>(null);
 
   const { fullscreen, qualities, canSetQuality, currentTime, duration, volume, muted, quality } = useMediaStore(player);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Отлеживание движение мыши
   const handleMouseMove = () => {
     if (fullscreen && isPlaying) {
       enterPlayerPanel();
@@ -33,6 +35,27 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     } else {
       enterPlayerPanel();
     }
+  };
+
+  const episodeSelection = (label: string, episode: IListPlayer) => {
+    setSelectedEpisode(label);
+    handlerCurrentEpisode(episode.hls);
+    leavePlayerPanel();
+    closeListEpisode();
+    closeSettingQualitiesPlayer();
+    setPlaying(false);
+  };
+
+  const closeListEpisode = () => {
+    setIsOpenListEpisode(false);
+  };
+
+  const openListEpisode = () => {
+    setIsOpenListEpisode(true);
+  };
+
+  const toggleOpenListEpisode = () => {
+    setIsOpenListEpisode(!isOpenListEpisode);
   };
 
   const openSettingQualitiesPlayer = () => {
@@ -92,7 +115,6 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     }
   };
 
-  // Качества видео
   const playlist = useMemo(
     () =>
       [
@@ -154,6 +176,22 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     };
   }, [fullscreen, isPlaying]);
 
+  useEffect(() => {
+    if (selectedEpisode === "") {
+      setSelectedEpisode("Эпизод 1");
+    }
+  }, [selectedEpisode]);
+
+  useEffect(() => {
+    if (!listEpisode || !selectedEpisode) return;
+
+    const episode = listEpisode ? Object.values(listEpisode).find((episode) => `Эпизод ${episode.episode}` === selectedEpisode) : null;
+
+    if (episode) {
+      setPropertiesEpisode(episode);
+    }
+  }, [selectedEpisode, listEpisode]);
+
   return {
     fullscreen,
     qualities,
@@ -183,5 +221,13 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     isOpenSettingPlayer,
     isOpenSettingQualitiesPlayer,
     closeSettingQualitiesPlayer,
+    toggleOpenListEpisode,
+    closeListEpisode,
+    openListEpisode,
+    selectedEpisode,
+    setSelectedEpisode,
+    isOpenListEpisode,
+    episodeSelection,
+    propertiesEpisode,
   };
 };

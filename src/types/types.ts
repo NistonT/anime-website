@@ -93,8 +93,13 @@ export interface IListPlayer {
   uuid: string | null;
   created_timestamp: number | null;
   preview: string | null;
-  skips: number[] | null;
+  skips: ISkips | null;
   hls: IHls;
+}
+
+export interface ISkips {
+  ending: number[];
+  opening: number[];
 }
 
 export interface IRutube {

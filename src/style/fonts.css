@@ -4,3 +4,18 @@
   font-family: "Netflix-regular";
   src: url("./../assets/font/NetflixSans-Regular.otf");
 }
+
+@font-face {
+  font-family: "Kosmos";
+  src: url("./../assets/font/ofont.ru_Kosmos.ttf");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("./../assets/font/OpenSans.ttf");
+}
+
+@font-face {
+  font-family: "Open Sans Italic";
+  src: url("./../assets/font/OpenSans-Italic.ttf");
+}
