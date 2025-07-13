@@ -41,6 +41,7 @@ type Props = {
   isVolumeInput: boolean;
   isOpenSettingPlayer: boolean;
   isOpenSettingQualitiesPlayer: boolean;
+  closeSettingPanel: () => void;
 };
 
 export const PlayerPanel = ({
@@ -53,6 +54,7 @@ export const PlayerPanel = ({
   selectedEpisode,
   toggleFullscreen,
   toggleOpenSettingPlayer,
+  closeSettingPanel,
   player,
   muted,
   listEpisode,
@@ -77,7 +79,13 @@ export const PlayerPanel = ({
     <>
       {isPlayerPanel && (
         <>
-          <div className="absolute top-0 left-0 w-full h-full inset-shadow-md" />
+          <div
+            className="absolute top-0 left-0 w-full h-full inset-shadow-md"
+            onClick={() => {
+              toggleAutoPlay();
+              closeSettingPanel();
+            }}
+          />
           <div className="absolute top-0">
             <div className="text-white bg-black">
               <div className="bg-bg/90 rounded-lg py-2 m-2">
@@ -111,7 +119,7 @@ export const PlayerPanel = ({
 
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-5">
-                  <ButtonPlaying toggleAutoPlay={toggleAutoPlay} isPlaying={isPlaying} />
+                  <ButtonPlaying toggleAutoPlay={toggleAutoPlay} isPlaying={isPlaying} player={player} />
 
                   <VolumeInput
                     enterVolumeInput={enterVolumeInput}

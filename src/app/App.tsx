@@ -25,7 +25,7 @@ export const App = () => {
     <>
       <div>
         <Swiper spaceBetween={0} slidesPerView={1}>
-          {data?.list.map((elem) => {
+          {data?.list.map((elem, index) => {
             return (
               <>
                 <SwiperSlide key={elem.id}>
@@ -34,7 +34,7 @@ export const App = () => {
                       <img src={`${import.meta.env.VITE_URL}${elem.posters.medium.url}`} alt="poster" />
                     </div>
                     <div>
-                      <VideoPlayer video={elem} />
+                      <VideoPlayer video={elem} index={index} />
                     </div>
                     <div>
                       <p></p>
