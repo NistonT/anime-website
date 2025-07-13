@@ -1,9 +1,10 @@
+import { usePlayerStore } from "@/store/usePlayerStore";
 import type { ITitle } from "@/types/title.type";
 import type { IHls, IListPlayer } from "@/types/types";
 import { useMediaStore, type MediaPlayerInstance } from "@vidstack/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export const useMediaPlayerInstance = (video: ITitle) => {
+export const useMediaPlayerInstance = (video: ITitle, playerId: string) => {
   const [videoHost] = useState(video.player.host);
   const player = useRef<MediaPlayerInstance>(null);
   const [isPlaying, setPlaying] = useState<boolean>(false);
@@ -16,6 +17,8 @@ export const useMediaPlayerInstance = (video: ITitle) => {
   const [isPlayerPanel, setIsPlayerPanel] = useState<boolean>(false);
   const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false);
   const [propertiesEpisode, setPropertiesEpisode] = useState<IListPlayer | null>(null);
+
+  const { activePlayerId, setActivePlayerId } = usePlayerStore();
 
   const { fullscreen, qualities, canSetQuality, currentTime, duration, volume, muted, quality } = useMediaStore(player);
 
@@ -83,6 +86,10 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     setIsOpenSettingPlayer(false);
   };
 
+  const closeSettingPanel = () => {
+    setIsOpenSettingPlayer(false);
+  };
+
   const toggleOpenSettingPlayer = () => {
     setIsOpenSettingPlayer(!isOpenSettingPlayer);
 
@@ -110,6 +117,7 @@ export const useMediaPlayerInstance = (video: ITitle) => {
       player.current?.pause();
       setPlaying(false);
     } else {
+      setActivePlayerId(playerId);
       player.current?.play();
       setPlaying(true);
     }
@@ -192,6 +200,27 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     }
   }, [selectedEpisode, listEpisode]);
 
+  useEffect(() => {
+    if (isPlaying) {
+      setActivePlayerId(playerId);
+    }
+  }, [isPlaying, playerId, setActivePlayerId]);
+
+  useEffect(() => {
+    if (activePlayerId && activePlayerId !== playerId && isPlaying) {
+      player.current?.pause();
+      setPlaying(false);
+    }
+  }, [activePlayerId, playerId, isPlaying]);
+
+  useEffect(() => {
+    return () => {
+      if (activePlayerId === playerId) {
+        setActivePlayerId(null);
+      }
+    };
+  }, [activePlayerId, playerId, setActivePlayerId]);
+
   return {
     fullscreen,
     qualities,
@@ -229,5 +258,6 @@ export const useMediaPlayerInstance = (video: ITitle) => {
     isOpenListEpisode,
     episodeSelection,
     propertiesEpisode,
+    closeSettingPanel,
   };
 };

@@ -7,9 +7,10 @@ import { PlayerPanel } from "./PlayerPanel";
 
 type Props = {
   video: ITitle;
+  index: number;
 };
 
-export const VideoPlayer = ({ video }: Props) => {
+export const VideoPlayer = ({ video, index }: Props) => {
   const {
     fullscreen,
     qualities,
@@ -43,7 +44,8 @@ export const VideoPlayer = ({ video }: Props) => {
     isOpenListEpisode,
     episodeSelection,
     propertiesEpisode,
-  } = useMediaPlayerInstance(video);
+    closeSettingPanel,
+  } = useMediaPlayerInstance(video, String(index));
 
   if (!video.player) {
     return <div>Видео недоступно</div>;
@@ -58,6 +60,7 @@ export const VideoPlayer = ({ video }: Props) => {
       >
         <MediaPlayer
           title="HLS Видео"
+          fullscreenOrientation="none"
           src={{
             src: videoSrc,
             type: "application/x-mpegurl",
@@ -70,6 +73,7 @@ export const VideoPlayer = ({ video }: Props) => {
           w-full h-full rounded-lg overflow-hidden bg-black
           ${fullscreen ? `object-cover h-screen w-screen` : "object-contain"}
         `}
+          tabIndex={0}
           onMouseEnter={() => {
             if (!fullscreen) enterPlayerPanel();
           }}
@@ -115,6 +119,7 @@ export const VideoPlayer = ({ video }: Props) => {
             isVolumeInput={isVolumeInput}
             isOpenSettingPlayer={isOpenSettingPlayer}
             isOpenSettingQualitiesPlayer={isOpenSettingQualitiesPlayer}
+            closeSettingPanel={closeSettingPanel}
           />
         </MediaPlayer>
       </div>
