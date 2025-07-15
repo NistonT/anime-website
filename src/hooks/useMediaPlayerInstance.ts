@@ -259,5 +259,6 @@ export const useMediaPlayerInstance = (video: ITitle, playerId: string) => {
     episodeSelection,
     propertiesEpisode,
     closeSettingPanel,
+    videoHost,
   };
 };
