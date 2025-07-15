@@ -3,14 +3,18 @@ import type { ITitle } from "@/types/title.type";
 import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
+import { useEffect } from "react";
 import { PlayerPanel } from "./PlayerPanel";
 
 type Props = {
   video: ITitle;
   index: number;
+  width?: number;
+  height?: number;
+  className?: string;
 };
 
-export const VideoPlayer = ({ video, index }: Props) => {
+export const VideoPlayer = ({ video, index, width, height, className }: Props) => {
   const {
     fullscreen,
     qualities,
@@ -45,17 +49,25 @@ export const VideoPlayer = ({ video, index }: Props) => {
     episodeSelection,
     propertiesEpisode,
     closeSettingPanel,
+    videoHost,
   } = useMediaPlayerInstance(video, String(index));
+
+  useEffect(() => {
+    console.log(videoHost);
+    console.log(`${import.meta.env.VITE_URL}${propertiesEpisode?.preview}`);
+  }, [propertiesEpisode]);
 
   if (!video.player) {
     return <div>Видео недоступно</div>;
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center p-4 bg-gray-900">
+    <div className="w-full h-full">
       <div
         className={`relative transition-all duration-300 ${
-          fullscreen ? "fixed inset-0 z-50 flex items-center justify-center bg-black" : "w-[800px] h-[450px]"
+          fullscreen
+            ? "fixed inset-0 z-50 flex items-center justify-center bg-black"
+            : `w-[${width ? width : 800}px] h-[${height ? height : 450}px] ${className}`
         }`}
       >
         <MediaPlayer

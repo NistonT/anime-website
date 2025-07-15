@@ -1,7 +1,6 @@
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { animeTitleService } from "@/services/animeTitleService";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,11 +15,6 @@ export const App = () => {
       }),
   });
 
-  useEffect(() => {
-    console.log(`${import.meta.env.VITE_URL}storage/releases/posters/9000/NBPPaSwgJrcoO4eg__f003bb6841ce26560a643491c197878f.jpg`);
-    console.log(data);
-  }, [data]);
-
   return (
     <>
       <div>
@@ -29,12 +23,12 @@ export const App = () => {
             return (
               <>
                 <SwiperSlide key={elem.id}>
-                  <div>
-                    <div>
+                  <div className="relative">
+                    <div className="relative z-20">
                       <img src={`${import.meta.env.VITE_URL}${elem.posters.medium.url}`} alt="poster" />
                     </div>
-                    <div>
-                      <VideoPlayer video={elem} index={index} />
+                    <div className="absolute z-10 top-0 right-0 w-full h-full">
+                      <VideoPlayer video={elem} index={index} className="w-full h-full" />
                     </div>
                     <div>
                       <p></p>
