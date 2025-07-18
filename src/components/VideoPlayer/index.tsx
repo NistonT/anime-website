@@ -1,5 +1,5 @@
 import { useMediaPlayerInstance } from "@/hooks/useMediaPlayerInstance";
-import type { ITitle } from "@/types/title.type";
+import type { IEpisode, ILatestEpisode } from "@/types/types";
 import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { PlayerPanel } from "./PlayerPanel";
 
 type Props = {
-  video: ITitle;
+  video: ILatestEpisode | IEpisode;
   index: number;
   width?: number;
   height?: number;
@@ -57,7 +57,7 @@ export const VideoPlayer = ({ video, index, width, height, className }: Props) =
     console.log(`${import.meta.env.VITE_URL}${propertiesEpisode?.preview}`);
   }, [propertiesEpisode]);
 
-  if (!video.player) {
+  if (!video.id) {
     return <div>Видео недоступно</div>;
   }
 

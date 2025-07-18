@@ -1,11 +1,9 @@
 import { usePlayerStore } from "@/store/usePlayerStore";
-import type { ITitle } from "@/types/title.type";
-import type { IHls, IListPlayer } from "@/types/types";
+import type { IEpisode, ILatestEpisode } from "@/types/types";
 import { useMediaStore, type MediaPlayerInstance } from "@vidstack/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export const useMediaPlayerInstance = (video: ITitle, playerId: string) => {
-  const [videoHost] = useState(video.player.host);
+export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerId: string) => {
   const player = useRef<MediaPlayerInstance>(null);
   const [isPlaying, setPlaying] = useState<boolean>(false);
   const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
