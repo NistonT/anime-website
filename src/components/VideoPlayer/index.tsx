@@ -1,77 +1,56 @@
-import { useMediaPlayerInstance } from "@/hooks/useMediaPlayerInstance";
-import type { IEpisode, ILatestEpisode } from "@/types/types";
-import { MediaPlayer, MediaProvider } from "@vidstack/react";
-import "@vidstack/react/player/styles/default/layouts/video.css";
-import "@vidstack/react/player/styles/default/theme.css";
-import { useEffect } from "react";
-import { PlayerPanel } from "./PlayerPanel";
+import { useMediaPlayerAndIndex } from "@/store/useMediaPlayerAndIndex";
+import type { IEpisode } from "@/types/types";
+import { MediaPlayer, MediaPlayerInstance, MediaProvider, useMediaStore } from "@vidstack/react";
+import { useEffect, useMemo, useRef } from "react";
+import { ButtonPlaying } from "./ButtonPlaying";
 
 type Props = {
-  video: ILatestEpisode | IEpisode;
-  index: number;
-  width?: number;
-  height?: number;
-  className?: string;
+  video: IEpisode;
+  videoIndex: number;
 };
 
-export const VideoPlayer = ({ video, index, width, height, className }: Props) => {
-  const {
-    fullscreen,
-    qualities,
-    canSetQuality,
-    currentTime,
-    duration,
-    volume,
-    muted,
-    quality,
-    videoSrc,
-    formatTime,
-    player,
-    toggleAutoPlay,
-    toggleFullscreen,
-    toggleOpenSettingPlayer,
-    enterVolumeInput,
-    leaveVolumeInput,
-    enterPlayerPanel,
-    leavePlayerPanel,
-    openSettingQualitiesPlayer,
-    handleMouseMove,
-    isPlayerPanel,
-    isVolumeInput,
-    isPlaying,
-    listEpisode,
-    isOpenSettingPlayer,
-    isOpenSettingQualitiesPlayer,
-    closeSettingQualitiesPlayer,
-    toggleOpenListEpisode,
-    selectedEpisode,
-    isOpenListEpisode,
-    episodeSelection,
-    propertiesEpisode,
-    closeSettingPanel,
-    videoHost,
-  } = useMediaPlayerInstance(video, String(index));
+export const VideoPlayer = ({ video, videoIndex }: Props) => {
+  const mediaPlayer = useRef<MediaPlayerInstance>(null);
+  const { fullscreen } = useMediaStore(mediaPlayer);
+
+  const { setIndex, setMediaPlayer } = useMediaPlayerAndIndex();
 
   useEffect(() => {
-    console.log(videoHost);
-    console.log(`${import.meta.env.VITE_URL}${propertiesEpisode?.preview}`);
-  }, [propertiesEpisode]);
+    setIndex(videoIndex.toString());
+    setMediaPlayer(mediaPlayer);
+  }, [videoIndex, mediaPlayer, setIndex, setMediaPlayer]);
 
-  if (!video.id) {
-    return <div>Видео недоступно</div>;
-  }
+  const playlist = useMemo(
+    () =>
+      [
+        "#EXTM3U",
+        "#EXT-X-VERSION:4",
+        "#EXT-X-PLAYLIST-TYPE:VOD",
+        "",
+        "#EXT-X-STREAM-INF:RESOLUTION=720x480",
+        video.hls_480,
+        "",
+        "#EXT-X-STREAM-INF:RESOLUTION=1280x720",
+        video.hls_720,
+        "",
+        "#EXT-X-STREAM-INF:RESOLUTION=1920x1080",
+        video.hls_1080,
+      ].join("\n"),
+    [video],
+  );
+
+  const videoSrc = useMemo(() => {
+    const blob = new Blob([playlist], {
+      type: "application/x-mpegurl",
+    });
+    return URL.createObjectURL(blob);
+  }, [playlist]);
 
   return (
-    <div className="w-full h-full">
-      <div
-        className={`relative transition-all duration-300 ${
-          fullscreen
-            ? "fixed inset-0 z-50 flex items-center justify-center bg-black"
-            : `w-[${width ? width : 800}px] h-[${height ? height : 450}px] ${className}`
-        }`}
-      >
+    <>
+      <div>
         <MediaPlayer
-          title="HLS Видео"
+          title={`player ${videoIndex}`}
           fullscreenOrientation="none"
           src={{
             src: videoSrc,
@@ -80,61 +59,19 @@ export const VideoPlayer = ({ video, index, width, height, className }: Props) =
           style={{
             "--media-video-object-fit": "fill",
           }}
-          ref={player}
+          ref={mediaPlayer}
           className={`
           w-full h-full rounded-lg overflow-hidden bg-black
           ${fullscreen ? `object-cover h-screen w-screen` : "object-contain"}
         `}
           tabIndex={0}
-          onMouseEnter={() => {
-            if (!fullscreen) enterPlayerPanel();
-          }}
-          onMouseLeave={() => {
-            if (!fullscreen && isPlaying) leavePlayerPanel();
-          }}
-          onMouseMove={() => {
-            if (fullscreen && isPlaying) {
-              handleMouseMove();
-            } else if (fullscreen && !isPlaying) {
-              enterPlayerPanel();
-            }
-          }}
         >
           <MediaProvider />
-
-          <PlayerPanel
-            isPlayerPanel={isPlayerPanel}
-            toggleAutoPlay={toggleAutoPlay}
-            isPlaying={isPlaying}
-            fullscreen={fullscreen}
-            isOpenListEpisode={isOpenListEpisode}
-            toggleOpenListEpisode={toggleOpenListEpisode}
-            selectedEpisode={selectedEpisode}
-            toggleFullscreen={toggleFullscreen}
-            toggleOpenSettingPlayer={toggleOpenSettingPlayer}
-            player={player}
-            muted={muted}
-            listEpisode={listEpisode}
-            episodeSelection={episodeSelection}
-            propertiesEpisode={propertiesEpisode}
-            qualities={qualities}
-            canSetQuality={canSetQuality}
-            closeSettingQualitiesPlayer={closeSettingQualitiesPlayer}
-            openSettingQualitiesPlayer={openSettingQualitiesPlayer}
-            quality={quality}
-            duration={duration}
-            currentTime={currentTime}
-            formatTime={formatTime}
-            enterVolumeInput={enterVolumeInput}
-            leaveVolumeInput={leaveVolumeInput}
-            volume={volume}
-            isVolumeInput={isVolumeInput}
-            isOpenSettingPlayer={isOpenSettingPlayer}
-            isOpenSettingQualitiesPlayer={isOpenSettingQualitiesPlayer}
-            closeSettingPanel={closeSettingPanel}
-          />
+          <div>
+            <ButtonPlaying />
+          </div>
         </MediaPlayer>
       </div>
-    </div>
+    </>
   );
 };
