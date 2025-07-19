@@ -26,8 +26,8 @@ export const App = () => {
               <SwiperSlide key={elem.id}>
                 <div className="relative">
                   <div className="relative z-20">{/* <img src={`${import.meta.env.VITE_URL}${elem.preview}`} alt="poster" /> */}</div>
-                  <div className="absolute z-10 top-0 right-0 w-full h-full">
-                    <VideoPlayer video={elem.latest_episode} index={index} className="w-full h-full" />
+                  <div className="">
+                    <VideoPlayer video={elem.latest_episode} videoIndex={index} />
                   </div>
                 </div>
               </SwiperSlide>

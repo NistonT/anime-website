@@ -1,4 +1,4 @@
-import type { IAgeRating, IGenres, ILatestEpisode, IName, IPoster, IPublishDay, ISeason, IType } from "./types";
+import type { IAgeRating, IEpisode, IGenres, IName, IPoster, IPublishDay, ISeason, IType } from "./types";
 
 export interface IReleaseLatest {
   id: number;
@@ -29,7 +29,7 @@ export interface IReleaseLatest {
   added_in_postponed_collection: number;
   added_in_abandoned_collection: number;
   genres: IGenres[];
-  latest_episode: ILatestEpisode;
+  latest_episode: IEpisode;
 }
 
 export interface IErrorReleaseLatest {

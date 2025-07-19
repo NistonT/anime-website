@@ -1,20 +1,20 @@
 import { usePlayerStore } from "@/store/usePlayerStore";
-import type { IEpisode, ILatestEpisode } from "@/types/types";
+import type { IEpisode } from "@/types/types";
 import { useMediaStore, type MediaPlayerInstance } from "@vidstack/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerId: string) => {
+export const useMediaPlayerInstance = (video: IEpisode, playerId: string) => {
   const player = useRef<MediaPlayerInstance>(null);
   const [isPlaying, setPlaying] = useState<boolean>(false);
-  const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
-  const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
+  // const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
+  // const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
   const [isOpenSettingPlayer, setIsOpenSettingPlayer] = useState<boolean>(false);
   const [isOpenSettingQualitiesPlayer, setIsOpenSettingQualitiesPlayer] = useState<boolean>(false);
   const [isOpenListEpisode, setIsOpenListEpisode] = useState<boolean>(false);
   const [selectedEpisode, setSelectedEpisode] = useState<string>("");
   const [isPlayerPanel, setIsPlayerPanel] = useState<boolean>(false);
   const [isVolumeInput, setIsVolumeInput] = useState<boolean>(false);
-  const [propertiesEpisode, setPropertiesEpisode] = useState<IListPlayer | null>(null);
+  // const [propertiesEpisode, setPropertiesEpisode] = useState<IListPlayer | null>(null);
 
   const { activePlayerId, setActivePlayerId } = usePlayerStore();
 
@@ -38,14 +38,14 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     }
   };
 
-  const episodeSelection = (label: string, episode: IListPlayer) => {
-    setSelectedEpisode(label);
-    handlerCurrentEpisode(episode.hls);
-    leavePlayerPanel();
-    closeListEpisode();
-    closeSettingQualitiesPlayer();
-    setPlaying(false);
-  };
+  // const episodeSelection = (label: string, episode: IListPlayer) => {
+  //   setSelectedEpisode(label);
+  //   handlerCurrentEpisode(episode.hls);
+  //   leavePlayerPanel();
+  //   closeListEpisode();
+  //   closeSettingQualitiesPlayer();
+  //   setPlaying(false);
+  // };
 
   const closeListEpisode = () => {
     setIsOpenListEpisode(false);
@@ -96,9 +96,9 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     }
   };
 
-  const handlerCurrentEpisode = (episode: IHls) => {
-    setCurrentEpisode(episode);
-  };
+  // const handlerCurrentEpisode = (episode: IHls) => {
+  //   setCurrentEpisode(episode);
+  // };
 
   const toggleFullscreen = () => {
     if (fullscreen) {
@@ -129,26 +129,20 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
         "#EXT-X-PLAYLIST-TYPE:VOD",
         "",
         "#EXT-X-STREAM-INF:RESOLUTION=720x480",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.sd}`
-          : video.player.list?.[1]?.hls?.sd
-            ? `https://${videoHost}${video.player.list[1].hls.sd}`
-            : "",
+        // currentEpisode
+        //   ? `https://${videoHost}${currentEpisode.sd}`
+        //   : video.player.list?.[1]?.hls?.sd
+        //     ? `https://${videoHost}${video.player.list[1].hls.sd}`
+        //     : "",
+
+        video.hls_480,
         "#EXT-X-STREAM-INF:RESOLUTION=1280x720",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.hd}`
-          : video.player.list?.[1]?.hls?.hd
-            ? `https://${videoHost}${video.player.list[1].hls.hd}`
-            : "",
+        video.hls_720,
         "",
         "#EXT-X-STREAM-INF:RESOLUTION=1920x1080",
-        currentEpisode
-          ? `https://${videoHost}${currentEpisode.fhd}`
-          : video.player.list?.[1]?.hls?.fhd
-            ? `https://${videoHost}${video.player.list[1].hls.fhd}`
-            : "",
+        video.hls_1080,
       ].join("\n"),
-    [videoHost, video.player.list, currentEpisode],
+    [video],
   );
 
   const formatTime = (seconds: number): string => {
@@ -168,11 +162,11 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     return URL.createObjectURL(blob);
   }, [playlist]);
 
-  useEffect(() => {
-    if (video.player.list) {
-      setListEpisode(video.player.list);
-    }
-  }, [video, listEpisode]);
+  // useEffect(() => {
+  //   if (video.player.list) {
+  //     setListEpisode(video.player.list);
+  //   }
+  // }, [video, listEpisode]);
 
   useEffect(() => {
     return () => {
@@ -188,15 +182,19 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     }
   }, [selectedEpisode]);
 
+  // useEffect(() => {
+  //   if (!listEpisode || !selectedEpisode) return;
+
+  //   const episode = listEpisode ? Object.values(listEpisode).find((episode) => `Эпизод ${episode.episode}` === selectedEpisode) : null;
+
+  //   if (episode) {
+  //     setPropertiesEpisode(episode);
+  //   }
+  // }, [selectedEpisode, listEpisode]);
+
   useEffect(() => {
-    if (!listEpisode || !selectedEpisode) return;
-
-    const episode = listEpisode ? Object.values(listEpisode).find((episode) => `Эпизод ${episode.episode}` === selectedEpisode) : null;
-
-    if (episode) {
-      setPropertiesEpisode(episode);
-    }
-  }, [selectedEpisode, listEpisode]);
+    console.log(playlist);
+  }, [playlist]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -233,7 +231,6 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     player,
     toggleAutoPlay,
     toggleFullscreen,
-    handlerCurrentEpisode,
     toggleOpenSettingPlayer,
     enterVolumeInput,
     leaveVolumeInput,
@@ -244,7 +241,6 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     isPlayerPanel,
     isVolumeInput,
     isPlaying,
-    listEpisode,
     isOpenSettingPlayer,
     isOpenSettingQualitiesPlayer,
     closeSettingQualitiesPlayer,
@@ -254,9 +250,6 @@ export const useMediaPlayerInstance = (video: IEpisode | ILatestEpisode, playerI
     selectedEpisode,
     setSelectedEpisode,
     isOpenListEpisode,
-    episodeSelection,
-    propertiesEpisode,
     closeSettingPanel,
-    videoHost,
   };
 };

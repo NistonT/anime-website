@@ -1,12 +1,8 @@
-import type { IListPlayer } from "@/types/types";
 import type { MediaPlayerInstance, VideoQuality } from "@vidstack/react";
 import { ButtonPlaying } from "./ButtomPlaying";
 import { ButtonEpisode } from "./ButtonEpisode";
 import { ButtonFullscreen } from "./ButtonFullscreen";
 import { ButtonSettingPlayer } from "./ButtonSettingPlayer";
-import { ButtonSkips } from "./ButtonSkips";
-import { EpisodeList } from "./EpisodeList";
-import { EpisodeName } from "./EpisodeName";
 import { SettingPlayer } from "./SettingPlayer";
 import { VideoRewind } from "./VideoRewind";
 import { VideoTime } from "./VideoTime";
@@ -24,9 +20,9 @@ type Props = {
   toggleOpenSettingPlayer: () => void;
   player: React.RefObject<MediaPlayerInstance | null>;
   muted: boolean;
-  listEpisode: IListPlayer[] | null;
-  episodeSelection: (label: string, episode: IListPlayer) => void;
-  propertiesEpisode: IListPlayer | null;
+  // listEpisode: IListPlayer[] | null;
+  // episodeSelection: (label: string, episode: IListPlayer) => void;
+  // propertiesEpisode: IListPlayer | null;
   qualities: VideoQuality[];
   canSetQuality: boolean;
   closeSettingQualitiesPlayer: () => void;
@@ -57,9 +53,9 @@ export const PlayerPanel = ({
   closeSettingPanel,
   player,
   muted,
-  listEpisode,
-  episodeSelection,
-  propertiesEpisode,
+  // listEpisode,
+  // episodeSelection,
+  // propertiesEpisode,
   qualities,
   canSetQuality,
   closeSettingQualitiesPlayer,
@@ -96,23 +92,23 @@ export const PlayerPanel = ({
                   selectedEpisode={selectedEpisode}
                 />
 
-                {isOpenListEpisode && (
+                {/* {isOpenListEpisode && (
                   <EpisodeList
                     listEpisode={listEpisode}
                     fullscreen={fullscreen}
                     episodeSelection={episodeSelection}
                     selectedEpisode={selectedEpisode}
                   />
-                )}
+                )} */}
               </div>
             </div>
           </div>
-          <div className="absolute bottom-24 px-2">
+          {/* <div className="absolute bottom-24 px-2">
             <ButtonSkips skips={propertiesEpisode?.skips} currentTime={currentTime} player={player} fullscreen={fullscreen} />
           </div>
           <div className="absolute bottom-12 px-2">
             <EpisodeName episode={propertiesEpisode?.episode} name={propertiesEpisode?.name} fullscreen={fullscreen} />
-          </div>
+          </div> */}
           <div className="absolute bottom-0 w-full pb-1">
             <div className="px-2">
               <VideoRewind duration={duration} currentTime={currentTime} player={player} />

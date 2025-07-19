@@ -1,52 +1,66 @@
-export interface IType {
+export interface IOption {
   value: string;
   description: string;
 }
 
-export interface IColor {
-  value: string;
-  description: string;
+export type IType = IOption;
+export type IColor = IOption;
+export type IQuality = IOption;
+export type ISeason = IOption;
+export type IPublishDay = IOption;
+export type IMemberRole = IOption;
+
+// -------------------------------
+
+export interface ITheme {
+  stop: number | null;
+  start: number | null;
 }
 
-export interface IQuality {
-  value: string;
-  description: string;
+export type IOpening = ITheme;
+export type IEnding = ITheme;
+
+// -------------------------------
+
+export interface IAgeRating extends IOption {
+  label: string;
+  is_adult: boolean;
 }
+
+// -------------------------------
+
+export type TypeImage = {
+  src: string;
+  preview: string;
+  thumbnail: string;
+};
+
+export interface IPoster extends TypeImage {
+  optimized: TypePosterOptimized;
+}
+
+type TypePosterOptimized = Omit<IPoster, "optimized">;
+
+export type IGenresImage = Omit<TypeImage, "src"> & { optimized: TypeGenresImageOptimized };
+
+type TypeGenresImageOptimized = Omit<IGenresImage, "optimized">;
+
+export interface IPreview extends TypeImage {
+  optimized: TypePreviewOptimized;
+}
+
+type TypePreviewOptimized = Omit<IPreview, "optimized">;
+
+export type IMemberUserAvatar = Omit<TypeImage, "src"> & { optimized: TypeMemberUserAvatarOptimized };
+
+type TypeMemberUserAvatarOptimized = Omit<IMemberUserAvatar, "optimized">;
+
+// -------------------------------
 
 export interface IName {
   main: string;
   english: string;
   alternative: string | null;
-}
-
-export interface ISeason {
-  value: string;
-  description: string;
-}
-
-export interface IPoster {
-  src: string;
-  preview: string;
-  thumbnail: string;
-  optimized: IPosterOptimized;
-}
-
-export interface IPosterOptimized {
-  src: string;
-  preview: string;
-  thumbnail: string;
-}
-
-export interface IAgeRating {
-  value: string;
-  label: string;
-  is_adult: boolean;
-  description: string;
-}
-
-export interface IPublishDay {
-  value: number;
-  description: string;
 }
 
 export interface IGenres {
@@ -56,46 +70,12 @@ export interface IGenres {
   total_releases: number;
 }
 
-export interface IGenresImage {
-  preview: string;
-  thumbnail: string;
-  optimized: IGenresImageOptimized;
-}
-
-export interface IGenresImageOptimized {
-  preview: string;
-  thumbnail: string;
-}
-
-export interface IOpening {
-  stop: number | null;
-  start: number | null;
-}
-
-export interface IEnding {
-  stop: number | null;
-  start: number | null;
-}
-
-export interface IPreview {
-  src: string;
-  preview: string;
-  thumbnail: string;
-  optimized: IPreviewOptimized;
-}
-
-export interface IPreviewOptimized {
-  src: string;
-  preview: string;
-  thumbnail: string;
-}
-
-export interface ILatestEpisode {
+export interface IEpisode {
   id: string;
   name: string | null;
-  ordinal: string;
-  opening: IOpening;
+  ordinal: number;
   ending: IEnding;
+  opening: IOpening;
   preview: IPreview;
   hls_480: string;
   hls_720: string;
@@ -116,44 +96,9 @@ export interface IMembers {
   nickname: string;
 }
 
-export interface IMemberRole {
-  value: string;
-  description: string;
-}
-
 export interface IMemberUser {
   id: number;
   avatar: IMemberUserAvatar;
-}
-
-export interface IMemberUserAvatar {
-  preview: string;
-  thumbnail: string;
-  optimized: IMemberUserAvatarOptimized;
-}
-
-export interface IMemberUserAvatarOptimized {
-  preview: string;
-  thumbnail: string;
-}
-
-export interface IEpisode {
-  id: string;
-  name: string | null;
-  ordinal: number;
-  ending: IEnding;
-  opening: IOpening;
-  preview: IPreview;
-  hls_480: string;
-  hls_720: string;
-  hls_1080: string;
-  duration: string;
-  rutube_id: string;
-  youtube_id: string;
-  updated_at: string;
-  sort_order: number;
-  release_id: number;
-  name_english: string | null;
 }
 
 export interface ICodec {
