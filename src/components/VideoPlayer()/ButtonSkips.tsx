@@ -1,10 +1,10 @@
-import type { ISkips } from "@/types/types";
+import type { IEnding, IOpening } from "@/types/types";
 import type { MediaPlayerInstance } from "@vidstack/react";
 import { useState } from "react";
 import { Button } from "../ui/Button";
 
 type Props = {
-  skips: ISkips | null | undefined;
+  skips: IOpening | IEnding | null | undefined;
   currentTime: number;
   player: React.RefObject<MediaPlayerInstance | null>;
   fullscreen: boolean;

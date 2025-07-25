@@ -6,8 +6,16 @@ import { MediaPlayer, MediaPlayerInstance, MediaProvider, useMediaStore } from "
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import { useEffect, useMemo, useRef } from "react";
+import { ButtonEpisode } from "./ButtonEpisode";
 import { ButtonFullscreen } from "./ButtonFullscreen";
 import { ButtonPlaying } from "./ButtonPlaying";
+import { ButtonSettingPlayer } from "./ButtonSettingPlayer";
+import { EpisodeList } from "./EpisodeList";
+import { EpisodeName } from "./EpisodeName";
+import { SettingPlayer } from "./SettingPlayer";
+import { VideoRewind } from "./VideoRewind";
+import { VideoTime } from "./VideoTime";
+import { VolumeInput } from "./VolumeInput";
 
 type Props = {
   video: IEpisode | IEpisode[];
@@ -20,9 +28,20 @@ type Props = {
 export const VideoPlayer = ({ video, videoIndex, width, height, className }: Props) => {
   const mediaPlayer = useRef<MediaPlayerInstance>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { fullscreen } = useMediaStore(mediaPlayer);
+  const { fullscreen, qualities, canSetQuality, currentTime, duration, volume, muted, quality } = useMediaStore(mediaPlayer);
   const { isPlaying, setPlaying } = useAutoPlayMediaPlayer();
-  const { enterPlayerPanel, leavePlayerPanel, setListEpisode, listEpisode, selectedEpisode, setSelectedEpisode } = usePlayerMediaPanel();
+  const {
+    enterPlayerPanel,
+    leavePlayerPanel,
+    setListEpisode,
+    listEpisode,
+    selectedEpisode,
+    setSelectedEpisode,
+    currentEpisode,
+    isPlayerPanel,
+    closeSettingPanel,
+    isOpenListEpisode,
+  } = usePlayerMediaPanel();
   const { setActivePlayerId, activePlayerId } = usePlayerStore();
 
   const playlist = useMemo(
@@ -33,22 +52,37 @@ export const VideoPlayer = ({ video, videoIndex, width, height, className }: Pro
         "#EXT-X-PLAYLIST-TYPE:VOD",
         "",
         "#EXT-X-STREAM-INF:RESOLUTION=720x480",
-        Array.isArray(video) ? video[0].hls_480 : video.hls_480,
+        currentEpisode ? currentEpisode.hls_480 : Array.isArray(video) ? video[0].hls_480 : video.hls_480,
         "",
         "#EXT-X-STREAM-INF:RESOLUTION=1280x720",
-        Array.isArray(video) ? video[0].hls_720 : video.hls_720,
+        currentEpisode ? currentEpisode.hls_720 : Array.isArray(video) ? video[0].hls_720 : video.hls_720,
         "",
         "#EXT-X-STREAM-INF:RESOLUTION=1920x1080",
-        Array.isArray(video) ? video[0].hls_1080 : video.hls_1080,
+        currentEpisode ? currentEpisode.hls_1080 : Array.isArray(video) ? video[0].hls_1080 : video.hls_1080,
       ].join("\n"),
-    [video],
+    [video, currentEpisode],
   );
 
-  // currentEpisode
-  //   ? `https://${videoHost}${currentEpisode.sd}`
-  //   : video.player.list?.[1]?.hls?.sd
-  //     ? `https://${videoHost}${video.player.list[1].hls.sd}`
-  //     : "",
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const secs = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+
+  const toggleAutoPlay = () => {
+    if (isPlaying) {
+      mediaPlayer?.current?.pause();
+      setPlaying(false);
+    } else {
+      setActivePlayerId(videoIndex.toString());
+      mediaPlayer?.current?.play();
+      setPlaying(true);
+    }
+  };
 
   const videoSrc = useMemo(() => {
     const blob = new Blob([playlist], {
@@ -166,8 +200,56 @@ export const VideoPlayer = ({ video, videoIndex, width, height, className }: Pro
           >
             <MediaProvider />
             <div>
-              <ButtonPlaying mediaPlayer={mediaPlayer} index={videoIndex.toString()} />
-              <ButtonFullscreen mediaPlayer={mediaPlayer} fullscreen={fullscreen} />
+              <>
+                {isPlayerPanel && (
+                  <>
+                    <div
+                      className="absolute top-0 left-0 w-full h-full inset-shadow-md"
+                      onClick={() => {
+                        toggleAutoPlay();
+                        closeSettingPanel();
+                      }}
+                    />
+                    <div className="absolute top-0">
+                      <div className="text-white bg-black">
+                        <div className="bg-bg/90 rounded-lg py-2 m-2">
+                          <ButtonEpisode fullscreen={fullscreen} />
+
+                          {isOpenListEpisode && <EpisodeList fullscreen={fullscreen} />}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-24 px-2">
+                      {/* <ButtonSkips skips={propertiesEpisode?.skips} currentTime={currentTime} player={player} fullscreen={fullscreen} /> */}
+                    </div>
+                    <div className="absolute bottom-12 px-2">
+                      <EpisodeName episode={currentEpisode ? currentEpisode : Array.isArray(video) ? video[0] : video} fullscreen={fullscreen} />
+                    </div>
+                    <div className="absolute bottom-0 w-full pb-1">
+                      <div className="px-2">
+                        <VideoRewind duration={duration} currentTime={currentTime} player={mediaPlayer} />
+
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-5">
+                            <ButtonPlaying mediaPlayer={mediaPlayer} index={videoIndex.toString()} />
+
+                            <VolumeInput player={mediaPlayer} muted={muted} volume={volume} />
+
+                            <VideoTime formatTime={formatTime} currentTime={currentTime} duration={duration} />
+                          </div>
+                          <div className="flex items-center gap-5">
+                            <SettingPlayer fullscreen={fullscreen} quality={quality} qualities={qualities} canSetQuality={canSetQuality} />
+
+                            <ButtonSettingPlayer />
+
+                            <ButtonFullscreen mediaPlayer={mediaPlayer} fullscreen={fullscreen} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
             </div>
           </MediaPlayer>
         </div>

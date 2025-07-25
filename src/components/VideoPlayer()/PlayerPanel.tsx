@@ -92,23 +92,23 @@ export const PlayerPanel = ({
                   selectedEpisode={selectedEpisode}
                 />
 
-                {/* {isOpenListEpisode && (
+                {isOpenListEpisode && (
                   <EpisodeList
                     listEpisode={listEpisode}
                     fullscreen={fullscreen}
                     episodeSelection={episodeSelection}
                     selectedEpisode={selectedEpisode}
                   />
-                )} */}
+                )}
               </div>
             </div>
           </div>
-          {/* <div className="absolute bottom-24 px-2">
+          <div className="absolute bottom-24 px-2">
             <ButtonSkips skips={propertiesEpisode?.skips} currentTime={currentTime} player={player} fullscreen={fullscreen} />
           </div>
           <div className="absolute bottom-12 px-2">
             <EpisodeName episode={propertiesEpisode?.episode} name={propertiesEpisode?.name} fullscreen={fullscreen} />
-          </div> */}
+          </div>
           <div className="absolute bottom-0 w-full pb-1">
             <div className="px-2">
               <VideoRewind duration={duration} currentTime={currentTime} player={player} />
