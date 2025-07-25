@@ -1,7 +1,6 @@
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { animeReleaseService } from "@/services/animeReleaseService";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,10 +11,6 @@ export const App = () => {
     queryFn: () => animeReleaseService.getReleaseLatest(5),
     select: (data) => data.data,
   });
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <>

@@ -1,12 +1,12 @@
 import { useMediaPlayerInstance } from "@/hooks/useMediaPlayerInstance";
-import type { IEpisode, ILatestEpisode } from "@/types/types";
+import type { IEpisode } from "@/types/types";
 import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import { PlayerPanel } from "./PlayerPanel";
 
 type Props = {
-  video: ILatestEpisode | IEpisode;
+  video: IEpisode;
   index: number;
   width?: number;
   height?: number;
