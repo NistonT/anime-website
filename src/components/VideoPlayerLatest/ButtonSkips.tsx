@@ -4,17 +4,18 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 
 type Props = {
-  skips: IOpening | IEnding | null | undefined;
-  currentTime: number;
+  opening: IOpening | null;
+  ending: IEnding | null;
   player: React.RefObject<MediaPlayerInstance | null>;
   fullscreen: boolean;
+  currentTime: number;
 };
 
-export const ButtonSkips = ({ skips, currentTime, player, fullscreen }: Props) => {
-  const [startOpening] = useState<number | undefined>(skips?.opening[0]);
-  const [endOpening] = useState<number | undefined>(skips?.opening[1]);
-  const [startEnding] = useState<number | undefined>(skips?.ending[0]);
-  const [endEnding] = useState<number | undefined>(skips?.ending[1]);
+export const ButtonSkips = ({ opening, ending, player, fullscreen, currentTime }: Props) => {
+  const [startOpening] = useState<number | null | undefined>(opening?.start);
+  const [endOpening] = useState<number | null | undefined>(opening?.stop);
+  const [startEnding] = useState<number | null | undefined>(ending?.start);
+  const [endEnding] = useState<number | null | undefined>(ending?.stop);
 
   return (
     <>

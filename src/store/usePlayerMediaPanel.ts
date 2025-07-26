@@ -1,28 +1,15 @@
 import type { IEpisode } from "@/types/types";
 import { create } from "zustand";
 
-// const [listEpisode, setListEpisode] = useState<IListPlayer[] | null>(null);
-// const [currentEpisode, setCurrentEpisode] = useState<IHls | null>(null);
-// const episodeSelection = (label: string, episode: IListPlayer) => {
-//   setSelectedEpisode(label);
-//   handlerCurrentEpisode(episode.hls);
-//   leavePlayerPanel();
-//   closeListEpisode();
-//   closeSettingQualitiesPlayer();
-//   setPlaying(false);
-// };
-// const handlerCurrentEpisode = (episode: IHls) => {
-//   setCurrentEpisode(episode);
-// };
-
-// const [selectedEpisode, setSelectedEpisode] = useState<string>("");
-
 interface IPlayerMediaPanel {
   isPlayerPanel: boolean;
   isOpenSettingPlayer: boolean;
   isOpenSettingQualitiesPlayer: boolean;
   isOpenListEpisode: boolean;
   isVolumeInput: boolean;
+
+  isPlaying: boolean;
+  setPlaying: (value: boolean) => void;
 
   selectedEpisode: string;
 
@@ -59,6 +46,9 @@ export const usePlayerMediaPanel = create<IPlayerMediaPanel>((set) => ({
   isOpenSettingQualitiesPlayer: false,
   isOpenListEpisode: false,
   isVolumeInput: false,
+
+  isPlaying: false,
+  setPlaying: (value) => set(() => ({ isPlaying: value })),
 
   selectedEpisode: "",
 
