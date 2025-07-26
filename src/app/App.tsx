@@ -1,4 +1,4 @@
-import { VideoPlayer } from "@/components/VideoPlayer";
+import { VideoPlayerLatest } from "@/components/VideoPlayerLatest";
 import { animeReleaseService } from "@/services/animeReleaseService";
 import { useQuery } from "@tanstack/react-query";
 import "swiper/css";
@@ -21,10 +21,9 @@ export const App = () => {
               <SwiperSlide key={elem.id}>
                 <div className="relative">
                   <div className="relative z-20">{/* <img src={`${import.meta.env.VITE_URL}${elem.preview}`} alt="poster" /> */}</div>
-                  <div className="">
-                    <VideoPlayer video={elem.latest_episode} videoIndex={index} />
-                  </div>
+                  <div>{/* <VideoPlayer video={elem.latest_episode} videoIndex={index} /> */}</div>
                 </div>
+                <VideoPlayerLatest video={elem.latest_episode} videoIndex={index.toString()} />
               </SwiperSlide>
             ))
           ) : (
