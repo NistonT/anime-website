@@ -33,29 +33,34 @@ export const App = () => {
                       className="absolute inset-0 w-full h-full object-cover blur-sm scale-105 z-0"
                       aria-hidden="true"
                     />
-                    <div
-                      className="absolute inset-0 z-20 pointer-events-none"
-                      style={{
-                        boxShadow: "inset 60px 50px -10px rgba(0, 0, 0, 0.7)",
-                      }}
-                    />
+                    <div className="absolute top-0 left-0 w-full h-full bg-neutral-950/80" />
                   </div>
-                  <div className="absolute top-1/2  transform -translate-y-1/2 flex gap-2">
+                  <div className="absolute top-1/2  transform -translate-y-1/2 flex gap-10">
                     <div className="w-1/2 ">
-                      <div>
-                        <h1 className="text-4xl font-black text-white px-6 leading-tight font-netflix">{elem.name.main}</h1>
+                      <div className="px-6 flex flex-col gap-5">
+                        <h1 className="text-4xl font-black text-white leading-tight font-netflix">{elem.name.main}</h1>
                         <p className="text-sm text-white font-netflix">{elem.description}</p>
                       </div>
+                      <div className="relative px-6 pt-10 flex gap-2 justify-end">
+                        <Button>
+                          <Play className="w-4 h-4 mr-2" />
+                          {elem.latest_episode.ordinal} эпизод
+                        </Button>
+                        <Button>
+                          <List className="w-4 h-4 mr-2" />
+                          Все серии
+                        </Button>
+                      </div>
                     </div>
-                    <div className="w-1/2">
-                      <Button>
-                        <Play className="w-4 h-4 mr-2" />
-                        {elem.latest_episode.ordinal} эпизод
-                      </Button>
-                      <Button>
-                        <List className="w-4 h-4 mr-2" />
-                        Все серии
-                      </Button>
+                    <div className="w-1/2 relative">
+                      <div className="absolute p-4 top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2">
+                        <img
+                          src={`${import.meta.env.VITE_URL}${elem.poster.optimized.src}`}
+                          alt="blurred background"
+                          className="object-contain z-0 max-w-2xl rounded-2xl"
+                          aria-hidden="true"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
