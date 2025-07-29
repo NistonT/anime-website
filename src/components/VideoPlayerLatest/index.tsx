@@ -66,10 +66,6 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
   };
 
   useEffect(() => {
-    console.log(video);
-  }, [video]);
-
-  useEffect(() => {
     if (isPlaying) {
       setActivePlayerId(videoIndex);
     }
@@ -90,10 +86,6 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
     };
   }, [activePlayerId, videoIndex, setActivePlayerId]);
 
-  useEffect(() => {
-    console.log(isPlaying);
-  }, [isPlaying]);
-
   return (
     <div className="w-full h-full">
       <div
@@ -106,6 +98,7 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
         <MediaPlayer
           title="HLS Видео"
           fullscreenOrientation="none"
+          poster={`${import.meta.env.VITE_URL}${video.preview.optimized.src}`}
           src={{
             src: videoSrc,
             type: "application/x-mpegurl",
@@ -142,7 +135,7 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
                   togglePlaying();
                   setSettingPlayer(false);
                 }}
-              ></div>
+              />
               <div className="absolute bottom-24 px-2">
                 <ButtonSkips currentTime={currentTime} player={player} fullscreen={fullscreen} opening={video.opening} ending={video.ending} />
               </div>
