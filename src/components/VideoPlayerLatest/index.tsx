@@ -86,14 +86,22 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
     };
   }, [activePlayerId, videoIndex, setActivePlayerId]);
 
+  useEffect(() => {
+    console.log(width, height);
+  }, [width, height]);
+
   return (
     <div className="w-full h-full">
       <div
-        className={`relative transition-all duration-300 ${
-          fullscreen
-            ? "fixed inset-0 z-50 flex items-center justify-center bg-black"
-            : `w-[${width ? width : 800}px] h-[${height ? height : 450}px] ${className}`
-        }`}
+        className={`relative transition-all duration-300 ${fullscreen ? "fixed inset-0 z-50 flex items-center justify-center bg-black" : className}`}
+        style={
+          !fullscreen
+            ? {
+                width: width ? width : 800,
+                height: height ? height : 450,
+              }
+            : undefined
+        }
       >
         <MediaPlayer
           title="HLS Видео"
