@@ -1,6 +1,6 @@
 import type { IReleaseLatest } from "@/types/release-latest.type";
 import { List, Play } from "lucide-react";
-import { m } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/Button";
 import { VideoPlayerLatest } from "../VideoPlayerLatest";
@@ -32,6 +32,9 @@ export const ElemList = ({ elem, index }: Props) => {
       img.onerror = null;
     };
   }, [elem.poster.optimized.src]);
+  useEffect(() => {
+    console.log(isOpenVideoLatest);
+  }, [isOpenVideoLatest]);
 
   return (
     <div className="relative flex">
@@ -69,29 +72,47 @@ export const ElemList = ({ elem, index }: Props) => {
               className="object-contain z-0 max-w-2xl rounded-2xl"
               aria-hidden="true"
             />
-            {isOpenVideoLatest && (
-              <div className="absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2">
-                <m.div
-                  initial={{ width: imageSize.width, height: imageSize.height, opacity: 0 }}
-                  animate={{
-                    width: "100%",
-                    height: "100%",
-                    opacity: 1,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.4, 0, 0.2, 1],
-                    opacity: { duration: 0.3 },
-                  }}
-                  style={{ width: "100%", height: "100%" }}
-                  className="relative overflow-hidden origin-center"
-                >
-                  <VideoPlayerLatest video={elem.latest_episode} videoIndex={index.toString()} className="rounded-2xl w-full h-full" />
-                </m.div>
-              </div>
-            )}
           </div>
         </div>
+        <AnimatePresence>
+          {isOpenVideoLatest && (
+            <div className="absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2">
+              <m.div
+                initial={{
+                  width: 0,
+                  height: imageSize.height,
+                  opacity: 0,
+                  x: "50%",
+                  y: "50%",
+                  translateX: "-50%",
+                  translateY: "-50%",
+                }}
+                animate={{ width: "100vw", height: "100vh", opacity: 1, x: "50%", y: "50%", translateX: "-50%", translateY: "-50%" }}
+                exit={{
+                  width: 0,
+                  height: imageSize.height,
+                  opacity: 0,
+                  x: "50%",
+                  y: "50%",
+                  translateX: "-50%",
+                  translateY: "-50%",
+                }}
+                transition={{ duration: 0.2 }}
+                className={`relative overflow-hidden origin-center`}
+              >
+                <div className="rounded-2xl w-full h-full">
+                  <VideoPlayerLatest
+                    key={elem.latest_episode.id}
+                    video={elem.latest_episode}
+                    videoIndex={index.toString()}
+                    className="rounded-2xl w-full h-full"
+                    setOpenVideoLatest={setOpenVideoLatest}
+                  />
+                </div>
+              </m.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

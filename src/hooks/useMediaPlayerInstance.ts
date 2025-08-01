@@ -193,10 +193,6 @@ export const useMediaPlayerInstance = (video: IEpisode, playerId: string) => {
   // }, [selectedEpisode, listEpisode]);
 
   useEffect(() => {
-    console.log(playlist);
-  }, [playlist]);
-
-  useEffect(() => {
     if (isPlaying) {
       setActivePlayerId(playerId);
     }

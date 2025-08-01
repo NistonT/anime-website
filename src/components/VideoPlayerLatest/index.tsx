@@ -5,7 +5,9 @@ import type { IEpisode } from "@/types/types";
 import { MediaPlayer, MediaPlayerInstance, MediaProvider, useMediaStore } from "@vidstack/react";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
+import { LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "../ui/Button";
 import { ButtonFullscreen } from "./ButtonFullscreen";
 import { ButtonPlaying } from "./ButtonPlaying";
 import { ButtonSettingPlayer } from "./ButtonSettingPlayer";
@@ -19,13 +21,13 @@ import { VolumeInput } from "./VolumeInput";
 type Props = {
   video: IEpisode;
   videoIndex: string;
+  setOpenVideoLatest: (value: boolean) => void;
   className?: string;
-  width?: number;
-  height?: number;
 };
 
-export const VideoPlayerLatest = ({ video, videoIndex, className, width, height }: Props) => {
+export const VideoPlayerLatest = ({ video, videoIndex, className, setOpenVideoLatest }: Props) => {
   const [isPlaying, setPlaying] = useState<boolean>(false);
+
   const [isPlayingPanel, setPlayingPanel] = useState<boolean>(false);
   const { setSettingPlayer } = useMediaPlayerLatest();
 
@@ -56,20 +58,15 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
 
   const togglePlaying = () => {
     if (isPlaying) {
-      setPlaying(false);
       player.current?.pause();
+      setPlaying(false);
     } else {
+      // Только при старте воспроизведения — становимся активными
       setActivePlayerId(videoIndex);
       setPlaying(true);
       player.current?.play();
     }
   };
-
-  useEffect(() => {
-    if (isPlaying) {
-      setActivePlayerId(videoIndex);
-    }
-  }, [isPlaying, videoIndex, setActivePlayerId]);
 
   useEffect(() => {
     if (activePlayerId && activePlayerId !== videoIndex && isPlaying) {
@@ -86,24 +83,13 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
     };
   }, [activePlayerId, videoIndex, setActivePlayerId]);
 
-  useEffect(() => {
-    console.log(width, height);
-  }, [width, height]);
-
   return (
     <div className="w-full h-full">
       <div
-        className={`relative transition-all duration-300 ${fullscreen ? "fixed inset-0 z-50 flex items-center justify-center bg-black" : className}`}
-        style={
-          !fullscreen
-            ? {
-                width: width ? width : 800,
-                height: height ? height : 450,
-              }
-            : undefined
-        }
+        className={`relative transition-all duration-300 p-12 ${fullscreen ? "fixed inset-0 z-50 flex items-center justify-center bg-black" : className}`}
       >
         <MediaPlayer
+          key={video.id}
           title="HLS Видео"
           fullscreenOrientation="none"
           poster={`${import.meta.env.VITE_URL}${video.preview.optimized.src}`}
@@ -112,7 +98,7 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
             type: "application/x-mpegurl",
           }}
           style={{
-            "--media-video-object-fit": "fill",
+            "--media-video-object-fit": "contain",
           }}
           ref={player}
           className={`
@@ -144,6 +130,12 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, width, height 
                   setSettingPlayer(false);
                 }}
               />
+              <div className="absolute top-2 px-2">
+                <Button variant={"setting"} size={"lg"} onClick={() => setOpenVideoLatest(false)}>
+                  <LogOut />
+                  Выйти
+                </Button>
+              </div>
               <div className="absolute bottom-24 px-2">
                 <ButtonSkips currentTime={currentTime} player={player} fullscreen={fullscreen} opening={video.opening} ending={video.ending} />
               </div>
