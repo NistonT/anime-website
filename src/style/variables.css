@@ -110,7 +110,6 @@
 
   /* Color website */
 
-  --color-black: var(--color-black);
   --color-main: var(--main);
   --color-bg: var(--color-background-color);
   /* Font website */
@@ -152,7 +151,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 
-  --color-black: var(--color-black);
   --color-main: var(--main);
   --color-bg: var(--color-background-color);
   --font-netflix: var(--font-netflix-regular);
