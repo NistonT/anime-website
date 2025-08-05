@@ -1,4 +1,5 @@
 import type { IReleaseLatest } from "@/types/release-latest.type";
+import type { IEpisode } from "@/types/types";
 import { List, Play } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { useEffect, useState } from "react";
@@ -11,7 +12,8 @@ type Props = {
 };
 
 export const ElemList = ({ elem, index }: Props) => {
-  const [isOpenVideoLatest, setOpenVideoLatest] = useState<boolean>(false);
+  const [selectedEpisode, setSelectedEpisode] = useState<IEpisode>(elem.latest_episode);
+  const [isOpenVideoLatest, setOpenVideoLatest] = useState(false);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -32,9 +34,10 @@ export const ElemList = ({ elem, index }: Props) => {
       img.onerror = null;
     };
   }, [elem.poster.optimized.src]);
+
   useEffect(() => {
-    console.log(isOpenVideoLatest);
-  }, [isOpenVideoLatest]);
+    console.log(imageSize);
+  }, [imageSize]);
 
   return (
     <div className="relative flex">
@@ -54,7 +57,12 @@ export const ElemList = ({ elem, index }: Props) => {
             <p className="text-sm text-white font-netflix">{elem.description}</p>
           </div>
           <div className="relative px-6 pt-10 flex gap-2 justify-end">
-            <Button onClick={() => setOpenVideoLatest(true)}>
+            <Button
+              onClick={() => {
+                setSelectedEpisode(elem.latest_episode);
+                setOpenVideoLatest(true);
+              }}
+            >
               <Play />
               {elem.latest_episode.ordinal} эпизод
             </Button>
@@ -75,42 +83,25 @@ export const ElemList = ({ elem, index }: Props) => {
           </div>
         </div>
         <AnimatePresence>
-          {isOpenVideoLatest && (
-            <div className="absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2">
-              <m.div
-                initial={{
-                  width: 0,
-                  height: imageSize.height,
-                  opacity: 0,
-                  x: "50%",
-                  y: "50%",
-                  translateX: "-50%",
-                  translateY: "-50%",
+          {isOpenVideoLatest && selectedEpisode && (
+            <m.div
+              key={selectedEpisode.id}
+              initial={{ opacity: 0, width: 0, height: "100vh" }}
+              animate={{ height: "100vh", width: "100vw", opacity: 1 }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+            >
+              <VideoPlayerLatest
+                video={selectedEpisode!}
+                setOpenVideoLatest={() => {
+                  setOpenVideoLatest(false);
                 }}
-                animate={{ width: "100vw", height: "100vh", opacity: 1, x: "50%", y: "50%", translateX: "-50%", translateY: "-50%" }}
-                exit={{
-                  width: 0,
-                  height: imageSize.height,
-                  opacity: 0,
-                  x: "50%",
-                  y: "50%",
-                  translateX: "-50%",
-                  translateY: "-50%",
-                }}
-                transition={{ duration: 0.2 }}
-                className={`relative overflow-hidden origin-center`}
-              >
-                <div className="rounded-2xl w-full h-full">
-                  <VideoPlayerLatest
-                    key={elem.latest_episode.id}
-                    video={elem.latest_episode}
-                    videoIndex={index.toString()}
-                    className="rounded-2xl w-full h-full"
-                    setOpenVideoLatest={setOpenVideoLatest}
-                  />
-                </div>
-              </m.div>
-            </div>
+                key={selectedEpisode.id}
+                videoIndex={index.toString()}
+                className="rounded-2xl w-full h-full"
+              />
+            </m.div>
           )}
         </AnimatePresence>
       </div>

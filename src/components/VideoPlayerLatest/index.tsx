@@ -61,7 +61,6 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, setOpenVideoLa
       player.current?.pause();
       setPlaying(false);
     } else {
-      // Только при старте воспроизведения — становимся активными
       setActivePlayerId(videoIndex);
       setPlaying(true);
       player.current?.play();
@@ -83,6 +82,19 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, setOpenVideoLa
     };
   }, [activePlayerId, videoIndex, setActivePlayerId]);
 
+  useEffect(() => {
+    const currentPlayer = player.current;
+    if (!currentPlayer || !videoSrc) return;
+  }, [videoSrc, videoIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (videoSrc) {
+        URL.revokeObjectURL(videoSrc);
+      }
+    };
+  }, [videoSrc]);
+
   return (
     <div className="w-full h-full">
       <div
@@ -94,7 +106,7 @@ export const VideoPlayerLatest = ({ video, videoIndex, className, setOpenVideoLa
           fullscreenOrientation="none"
           poster={`${import.meta.env.VITE_URL}${video.preview.optimized.src}`}
           src={{
-            src: videoSrc,
+            src: videoSrc!,
             type: "application/x-mpegurl",
           }}
           style={{
