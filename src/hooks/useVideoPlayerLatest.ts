@@ -2,7 +2,6 @@ import type { IEpisode } from "@/types/types";
 import { useEffect, useMemo, useRef } from "react";
 
 export const useVideoPlayerLatest = (video: IEpisode) => {
-  // Генерируем плейлист
   const playlist = useMemo(() => {
     if (!video?.hls_480) return null;
 
@@ -21,12 +20,9 @@ export const useVideoPlayerLatest = (video: IEpisode) => {
     ].join("\n");
   }, [video]);
 
-  // Храним blob URL
   const blobUrlRef = useRef<string | null>(null);
 
-  // Создаём blob URL при изменении playlist
   useEffect(() => {
-    // Если нет плейлиста — выходим
     if (!playlist) {
       if (blobUrlRef.current) {
         URL.revokeObjectURL(blobUrlRef.current);
@@ -35,15 +31,12 @@ export const useVideoPlayerLatest = (video: IEpisode) => {
       return;
     }
 
-    // Создаём новый blob и URL
     const blob = new Blob([playlist], { type: "application/x-mpegurl" });
     const url = URL.createObjectURL(blob);
 
-    // Сохраняем старый URL, чтобы отозвать позже
     const oldUrl = blobUrlRef.current;
     blobUrlRef.current = url;
 
-    // Отзываем старый URL (если был)
     return () => {
       if (oldUrl) {
         URL.revokeObjectURL(oldUrl);
@@ -51,7 +44,6 @@ export const useVideoPlayerLatest = (video: IEpisode) => {
     };
   }, [playlist]);
 
-  // Очищаем при размонтировании
   useEffect(() => {
     return () => {
       if (blobUrlRef.current) {
