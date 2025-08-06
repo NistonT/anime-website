@@ -54,6 +54,13 @@ export const ElemList = ({ elem, index }: Props) => {
         <div className="w-1/2 ">
           <div className="px-6 flex flex-col gap-5">
             <h1 className="text-4xl font-black text-white leading-tight font-netflix">{elem.name.main}</h1>
+            <div className="flex gap-2 items-center flex-wrap">
+              {elem.genres.map((genre) => (
+                <Button key={genre.id} className="text-xs font-black text-white leading-tight font-netflix">
+                  {genre.name}
+                </Button>
+              ))}
+            </div>
             <p className="text-sm text-white font-netflix">{elem.description}</p>
           </div>
           <div className="relative px-6 pt-10 flex gap-2 justify-end">
