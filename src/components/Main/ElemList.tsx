@@ -50,7 +50,7 @@ export const ElemList = ({ elem, index }: Props) => {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-neutral-950/80" />
       </div>
-      <div className="absolute top-1/2  transform -translate-y-1/2 flex gap-10">
+      <div className="absolute top-3/7  transform -translate-y-1/2 flex gap-10">
         <div className="w-1/2 ">
           <div className="px-6 flex flex-col gap-5">
             <h1 className="text-4xl font-black text-white leading-tight font-netflix">{elem.name.main}</h1>
@@ -84,7 +84,7 @@ export const ElemList = ({ elem, index }: Props) => {
             <img
               src={`${import.meta.env.VITE_URL}${elem.poster.optimized.src}`}
               alt="blurred background"
-              className="object-contain z-0 max-w-2xl rounded-2xl"
+              className="object-contain z-0 max-w-xs rounded-2xl"
               aria-hidden="true"
             />
           </div>

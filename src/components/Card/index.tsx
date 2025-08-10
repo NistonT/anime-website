@@ -5,11 +5,12 @@ type Props = {
   name: IName;
   year: number;
   episodes_total: number | null;
+  className?: string;
 };
 
-export const Card = ({ poster, name, year, episodes_total }: Props) => {
+export const Card = ({ poster, name, year, episodes_total, className }: Props) => {
   return (
-    <div className="group relative max-w-56 cursor-pointer">
+    <div className={`group relative max-w-56 cursor-pointer ${className}`}>
       <div className="overflow-hidden rounded-xl">
         <img
           className="rounded-xl transition-transform duration-300 group-hover:scale-105"
