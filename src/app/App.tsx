@@ -10,7 +10,6 @@ import { useAnimeReleaseRandom } from "../hooks/useAnimeReleaseRandom";
 
 export const App = () => {
   const [activeId, setActiveId] = useState<number | null>(null);
-  const [activeSlide, setActiveSlide] = useState<number | null>(null);
 
   const bottomSwiperRef = useRef<SwiperInstance | null>(null);
   const topSwiperRef = useRef<SwiperInstance | null>(null);
