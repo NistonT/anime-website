@@ -1,4 +1,5 @@
 import { Card } from "@/components/Card";
+import { CardReleaseLatest } from "@/components/CardReleaseLatest";
 import { ElemList } from "@/components/Main/ElemList";
 import { useAnimeReleaseLatest } from "@/hooks/useAnimeReleaseLatest";
 import type { SwiperInstance } from "@/types/swiper";
@@ -55,7 +56,7 @@ export const App = () => {
               <p>Ошибка: {releaseLatest?.parameter1 || "Неизвестная ошибка"}</p>
             )}
           </Swiper>
-          <div className="absolute -bottom-50 w-full">
+          <div className="absolute -bottom-50 w-full z-10">
             <Swiper
               spaceBetween={0}
               slidesPerView={6}
@@ -71,12 +72,12 @@ export const App = () => {
                         topSwiperRef.current?.slideTo(index);
                       }}
                     >
-                      <Card
+                      <CardReleaseLatest
                         poster={elem.poster}
                         name={elem.name}
                         year={elem.year}
                         episodes_total={elem.episodes_total}
-                        className={activeId === elem.id ? "" : ""}
+                        className={activeId === elem.id ? "opacity-100" : "opacity-0"}
                       />
                     </div>
                   </SwiperSlide>

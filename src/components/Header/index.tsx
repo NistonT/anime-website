@@ -4,7 +4,7 @@ import logo from "/logo/logo.png";
 
 export const Header = () => {
   return (
-    <div className="flex absolute z-50 gap-10">
+    <div className="flex absolute z-20 gap-10">
       <div>
         <img className="w-52" src={logo} alt="logo" />
       </div>
