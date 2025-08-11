@@ -2,7 +2,7 @@ import type { IReleaseLatest } from "@/types/release-latest.type";
 import type { IEpisode } from "@/types/types";
 import { List, Play } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/Button";
 import { VideoPlayerLatest } from "../VideoPlayerLatest";
 
@@ -14,30 +14,6 @@ type Props = {
 export const ElemList = ({ elem, index }: Props) => {
   const [selectedEpisode, setSelectedEpisode] = useState<IEpisode>(elem.latest_episode);
   const [isOpenVideoLatest, setOpenVideoLatest] = useState(false);
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const img = new Image();
-    const imageUrl = `${import.meta.env.VITE_URL}${elem.poster.optimized.src}`;
-
-    img.src = imageUrl;
-
-    img.onload = () => {
-      setImageSize({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-      });
-    };
-
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-    };
-  }, [elem.poster.optimized.src]);
-
-  useEffect(() => {
-    console.log(imageSize);
-  }, [imageSize]);
 
   return (
     <div className="relative flex">
@@ -50,7 +26,7 @@ export const ElemList = ({ elem, index }: Props) => {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-neutral-950/80" />
       </div>
-      <div className="absolute top-1/2  transform -translate-y-1/2 flex gap-10">
+      <div className="absolute top-3/7  transform -translate-y-1/2 flex gap-10">
         <div className="w-1/2 ">
           <div className="px-6 flex flex-col gap-5">
             <h1 className="text-4xl font-black text-white leading-tight font-netflix">{elem.name.main}</h1>
@@ -79,12 +55,12 @@ export const ElemList = ({ elem, index }: Props) => {
             </Button>
           </div>
         </div>
-        <div className="w-1/2 relative">
+        <div className="w-1/2 relative ">
           <div className="absolute p-4 top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2">
             <img
               src={`${import.meta.env.VITE_URL}${elem.poster.optimized.src}`}
               alt="blurred background"
-              className="object-contain z-0 max-w-2xl rounded-2xl"
+              className="object-contain z-0 max-w-xs rounded-2xl"
               aria-hidden="true"
             />
           </div>
@@ -93,11 +69,11 @@ export const ElemList = ({ elem, index }: Props) => {
           {isOpenVideoLatest && selectedEpisode && (
             <m.div
               key={selectedEpisode.id}
-              initial={{ opacity: 0, width: 0, height: "100vh" }}
-              animate={{ height: "100vh", width: "100vw", opacity: 1 }}
+              initial={{ opacity: 0, width: 0, height: "85vh" }}
+              animate={{ height: "85vh", width: "100vw", opacity: 1 }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
               <VideoPlayerLatest
                 video={selectedEpisode!}

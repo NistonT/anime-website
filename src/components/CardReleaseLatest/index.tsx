@@ -8,17 +8,19 @@ type Props = {
   className?: string;
 };
 
-export const Card = ({ poster, name, year, episodes_total, className }: Props) => {
+export const CardReleaseLatest = ({ poster, name, year, episodes_total, className }: Props) => {
   return (
-    <div className={`group relative max-w-56 cursor-pointer ${className}`}>
-      <div className="overflow-hidden rounded-xl">
+    <div className={`group relative max-w-56 cursor-pointer`}>
+      <div className="overflow-hidden rounded-xl relative">
         <img
-          className="rounded-xl transition-transform duration-300 group-hover:scale-105"
+          className="rounded-xl transition-transform duration-300 group-hover:scale-105 relative w-full h-full"
           src={`${import.meta.env.VITE_URL}${poster.optimized.preview}`}
           alt={name.main}
         />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/50 bg-opacity-60 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div
+          className={`absolute flex flex-col items-center justify-center rounded-xl inset-0 bg-black/50 bg-opacity-60 p-4  group-hover:opacity-100 transition-opacity duration-300 ${className}`}
+        >
           <h3 className="font-netflix text-white text-lg font-semibold text-center">{name.main}</h3>
           <p className="font-netflix text-gray-200 text-sm">{year}</p>
           <p className="font-netflix text-gray-300 text-sm">Эпизодов: {episodes_total ? episodes_total : "Еще не закончен"}</p>
