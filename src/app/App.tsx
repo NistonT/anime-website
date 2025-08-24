@@ -1,12 +1,10 @@
-import { Card } from "@/components/Card";
-import { CardReleaseLatest } from "@/components/CardReleaseLatest";
-import { ElemList } from "@/components/Main/ElemList";
+import { MainScreenSwiper } from "@/components/Main/MainScreenSwiper";
+import { RandomReleaseSwiper } from "@/components/Main/RandomReleaseSwiper";
 import { useAnimeReleaseLatest } from "@/hooks/useAnimeReleaseLatest";
 import type { SwiperInstance } from "@/types/swiper";
 import { useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { useAnimeReleaseRandom } from "../hooks/useAnimeReleaseRandom";
 
 export const App = () => {
@@ -25,85 +23,18 @@ export const App = () => {
   }, [releaseLatest]);
 
   return (
-    <>
-      <div>
-        <div className="relative">
-          <Swiper
-            spaceBetween={0}
-            slidesPerView={1}
-            onSwiper={(swiper) => {
-              topSwiperRef.current = swiper;
-            }}
-            onSlideChange={(swiper) => {
-              const currentIndex = swiper.activeIndex;
-              if (Array.isArray(releaseLatest)) {
-                const elem = releaseLatest[currentIndex];
-                if (elem) {
-                  setActiveId(elem.id);
+    <div>
+      {/* Главный экран */}
+      <MainScreenSwiper
+        topSwiperRef={topSwiperRef}
+        bottomSwiperRef={bottomSwiperRef}
+        releaseLatest={releaseLatest}
+        setActiveId={setActiveId}
+        activeId={activeId}
+      />
 
-                  bottomSwiperRef.current?.slideTo(currentIndex);
-                }
-              }
-            }}
-          >
-            {Array.isArray(releaseLatest) ? (
-              releaseLatest.map((elem, index) => (
-                <SwiperSlide key={elem.id}>
-                  <ElemList elem={elem} index={index} />
-                </SwiperSlide>
-              ))
-            ) : (
-              <p>Ошибка: {releaseLatest?.parameter1 || "Неизвестная ошибка"}</p>
-            )}
-          </Swiper>
-          <div className="absolute -bottom-50 w-full z-10">
-            <Swiper
-              spaceBetween={0}
-              slidesPerView={6}
-              onSwiper={(swiper) => {
-                bottomSwiperRef.current = swiper;
-              }}
-            >
-              {Array.isArray(releaseLatest) ? (
-                releaseLatest.map((elem, index) => (
-                  <SwiperSlide key={elem.id}>
-                    <div
-                      onClick={() => {
-                        topSwiperRef.current?.slideTo(index);
-                      }}
-                    >
-                      <CardReleaseLatest
-                        poster={elem.poster}
-                        name={elem.name}
-                        year={elem.year}
-                        episodes_total={elem.episodes_total}
-                        className={activeId === elem.id ? "opacity-100" : "opacity-0"}
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))
-              ) : (
-                <p>Ошибка: {releaseLatest?.parameter1 || "Неизвестная ошибка"}</p>
-              )}
-            </Swiper>
-          </div>
-        </div>
-
-        <div className="pt-50">
-          <h1 className="font-netflix text-white text-lg font-medium py-4">Случайные релизы</h1>
-          <Swiper spaceBetween={0} slidesPerView={6} className="flex">
-            {Array.isArray(releaseRandom) ? (
-              releaseRandom.map((elem) => (
-                <SwiperSlide key={elem.id}>
-                  <Card poster={elem.poster} name={elem.name} year={elem.year} episodes_total={elem.episodes_total} />
-                </SwiperSlide>
-              ))
-            ) : (
-              <p>Ошибка: Неизвестная ошибка</p>
-            )}
-          </Swiper>
-        </div>
-      </div>
-    </>
+      {/* Случайные релизы */}
+      <RandomReleaseSwiper releaseRandom={releaseRandom} />
+    </div>
   );
 };
