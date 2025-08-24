@@ -1,54 +1,53 @@
-# React + TypeScript + Vite
+# 🎌 AnimeFlex — Аниме-платформа на Anilibria API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Современный аниме-сайт с плавным воспроизведением, интуитивной навигацией и красивым UI. Построен на свежих технологиях и использует официальное API [Anilibria](https://anilibria.top).
 
-Currently, two official plugins are available:
+🌐 **Демо (Vercel):** [https://anime-website-xi.vercel.app/](https://anime-website-xi.vercel.app/)  
+📚 **API документация:** [https://anilibria.top/api/docs/v1](https://anilibria.top/api/docs/v1)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🌟 Основные возможности
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🔍 Поиск аниме по названию, году, жанрам
+- 📺 Онлайн-воспроизведение через `HLS` и `Vidstack React`
+- 🎞️ Просмотр новинок и популярных релизов
+- 🗂️ Детальная страница релиза с описанием, сериями и голосами
+- 🎯 Пагинация и бесконечная подгрузка (через `React Query`)
+- 🎨 Адаптивный дизайн с анимациями (Tailwind + Motion)
+- 🧭 Современная навигация с `Tanstack React-Router`
+- 🛎️ Уведомления (через `Sonner`)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Технологии и библиотеки
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 🧱 Основные зависимости
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+| Библиотека | Назначение |
+|----------|-----------|
+| `React 19` + `React DOM` | Фронтенд-фреймворк нового поколения |
+| `Vite` | Быстрая сборка и HMR |
+| `TypeScript` | Статическая типизация |
+| `Tailwind` | Адаптивные стили и дизайн |
+| `Zustand` | Управление глобальным состоянием |
+| `Axios` | HTTP-запросы к API Anilibria |
+| `Tanstack React-Query` | Управление асинхронными данными, кэширование |
+| `Tanstack React-Router` | Современный роутинг с автогенерацией |
+| `DayJs` | Работа с датами |
+
+### 🎨 UI / UX
+
+| Библиотека | Назначение |
+|----------|-----------|
+| `Lucide React` | Чистые иконки |
+| `Sonner` | Красивые уведомления |
+| `Motion` | Анимации и переходы |
+| `Swiper` | Свайпер |
+
+### 📺 Видео-воспроизведение
+
+| Библиотека | Назначение |
+|----------|-----------|
+| `hls.js` | Поддержка HLS-потоков |
+| `Vidstack React` | Современный видеоплеер с субтитрами и UI |
